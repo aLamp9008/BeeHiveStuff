@@ -54,35 +54,6 @@ public class Node{
 		next[23] = Driver.cube[X + 1][Y - 1][Z];
 		next[24] = Driver.cube[X + 1][Y][Z + 1];
 		next[25] = Driver.cube[X + 1][Y][Z - 1];
-		
-		/*
-		nextInt[0] = (a + 1);
-		nextInt[1] = (a - 1);
-		nextInt[2] = (a + d);
-		nextInt[3] = (a - d);
-		nextInt[4] = (a + d * d);
-		nextInt[5] = (a - d * d);
-		nextInt[6] = (a - d + 1);
-		nextInt[7] = (a - d - 1);
-		nextInt[8] = (a + d + 1);
-		nextInt[9] = (a + d - 1);
-		nextInt[10] = (a + (d * d) + 1);
-		nextInt[11] = (a + (d * d) - 1);
-		nextInt[12] = (a - (d * d) + 1);
-		nextInt[13] = (a - (d * d) - 1);
-		nextInt[14] = (a + (d * d) + d);
-		nextInt[15] = (a + (d * d) - d);
-		nextInt[16] = (a - (d * d) + d);
-		nextInt[17] = (a - (d * d) - d);
-		nextInt[18] = (a + (d * d) + d + 1);
-		nextInt[19] = (a + (d * d) + d - 1);
-		nextInt[20] = (a + (d * d) - d + 1);
-		nextInt[21] = (a + (d * d) - d - 1);
-		nextInt[22] = (a - (d * d) + d + 1);
-		nextInt[23] = (a - (d * d) + d - 1);
-		nextInt[24] = (a - (d * d) - d + 1);
-		nextInt[25] = (a - (d * d) - d - 1);
-		*/
 	}
 	
 	public Node[] getNextTo(){
@@ -96,11 +67,11 @@ public class Node{
 	public void makeHive(int num){
 		isHive = true;
 		hiveNumber = num;
-		//if (hiveNumber == 0){
-			System.out.println("Hive node (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");//\nNumber : " + hiveNumber);
-	//	}else if (hiveNumber == 14){
-		//	System.out.println("Ending hive node (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
-		//}
+		if (hiveNumber == 0){
+			System.out.println("Start hive node (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
+		}else if (hiveNumber == 14){
+			System.out.println("Ending hive node (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
+		}
 	}
 
 	public boolean makeBee(int beeNum){

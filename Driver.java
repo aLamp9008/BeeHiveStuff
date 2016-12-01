@@ -10,6 +10,8 @@ class Driver{
 	
 	public static Node[][][] cube;
 	public static int volume;
+	public static Node[] hives;
+	public static Node[] bees;
 	
 	public static void main(String[] args){
 		
@@ -18,11 +20,33 @@ class Driver{
 		cube = new Node[dimention][dimention][dimention];
 		volume = dimention * dimention * dimention;
 		
-		initCube();
+		initCube();		
+	}
+		
+	
+	//MARK: - Path Finding
+
+	
+	static void findPath(){
+		for (int i = 0; i < 15; i ++){
+			
+		}
+		
 		
 		
 	}
-		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//MARK: - Init Cube
 	
 	//creates the blocks in a cube as solid, hive and bee
@@ -50,23 +74,20 @@ class Driver{
 			int y = rn.nextInt(dimention + 1);
 			int z = rn.nextInt(dimention + 1);
 			int a = rn.nextInt(3);
-			boolean pm = rn.nextBoolean();
-			System.out.println(pm + " " + a + " X: " + x + " Y: " + y + " Z:" + z);
+			//System.out.println(a + " X: " + x + " Y: " + y + " Z:" + z);
 			boolean does = false;
 			switch(a){
-			case 0: does = (pm) ? existsinCube(x + 14, y, z) : existsinCube(x - 14, y, z); break;
-			case 1: does = (pm) ? existsinCube(x, y + 14, z) : existsinCube(x, y - 14, z); break;
-			case 2: does = (pm) ? existsinCube(x, y, z + 14) : existsinCube(x, y, z - 14); break;
+			case 0: does = existsinCube(x + 14, y, z); break;
+			case 1: does = existsinCube(x, y + 14, z); break;
+			case 2: does = existsinCube(x, y, z + 14); break;
 			default: break;
 			}
 			if(existsinCube(x, y, z) && does){
-				for (int i = 0; i < dimention; i++){
-					System.out.println(cube[x][y][z].get(keys.Z));
-					System.out.println(z);
+				for (int i = 0; i < 15; i++){
 					switch(a){
-					case 0: if(pm){cube[x + i][y][z].makeHive(i); }else{ cube[x - i][y][z].makeHive(i); } break; 
-					case 1: if(pm){cube[x][y + i][z].makeHive(i); }else{ cube[x][y - i][z].makeHive(i); } break;
-					case 2: if(pm){cube[x][y][z + i].makeHive(i); }else{ cube[x][y][z - i].makeHive(i); } break;
+					case 0: cube[x + i][y][z].makeHive(i); break; 
+					case 1: cube[x][y + i][z].makeHive(i); break;
+					case 2: cube[x][y][z + i].makeHive(i); break;
 					}
 				}
 				break;
@@ -99,9 +120,7 @@ class Driver{
 					break;
 				}
 			}
-		}
-		
-		
+		}	
 	}
 	
 	public static boolean existsinCube(int a, int b, int c){
