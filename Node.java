@@ -79,7 +79,6 @@ public class Node{
 			if (!isHive){
 				isBee = true;
 				beeNumber = beeNum;
-				Driver.bees
 				System.out.println("Bee #" + beeNumber + " (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
 				return true;
 			}//else{
