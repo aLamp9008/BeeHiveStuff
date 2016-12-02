@@ -10,8 +10,8 @@ class Driver{
 	
 	public static Node[][][] cube;
 	public static int volume;
-	public static Node[] hives;
-	public static Node[] bees;
+	public static Node[] hives = new Node[15];
+	public static Node[] bees = new Node[15];
 	
 	public static void main(String[] args){
 		
@@ -20,7 +20,8 @@ class Driver{
 		cube = new Node[dimention][dimention][dimention];
 		volume = dimention * dimention * dimention;
 		
-		initCube();		
+		initCube();	
+//		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
 		
 	
@@ -85,18 +86,42 @@ class Driver{
 			if(existsinCube(x, y, z) && does){
 				for (int i = 0; i < 15; i++){
 					switch(a){
-					case 0: cube[x + i][y][z].makeHive(i); break; 
-					case 1: cube[x][y + i][z].makeHive(i); break;
-					case 2: cube[x][y][z + i].makeHive(i); break;
+					case 0: 
+						cube[x + i][y][z].makeHive(i); 
+						hives[i] = cube[x + i][y][z]; 
+						break; 
+					case 1: 
+						cube[x][y + i][z].makeHive(i); 
+						hives[i] = cube[x][y + i][z];
+						break;
+					case 2: 
+						cube[x][y][z + i].makeHive(i);
+						hives[i] = cube[x][y][z + i];
+						break;
 					}
 				}
 				break;
 			}
 		}
-		
-		
+
+
+		//makes 15 of the blocks bees
+		for (int i = 0; i < 15; i++){
+			while(true){
+				Random rn = new Random();
+				int x = rn.nextInt(dimention);
+				int y = rn.nextInt(dimention);
+				int z = rn.nextInt(dimention);
+				if (cube[x][y][z].makeBee(i)){
+					bees[i] = cube[x][y][z]; 
+					break;
+				}
+			}
+		}
+
 		//sets 0.3 of the blocks into solid
 		int numOfSolids = (int) (0.3 * volume);
+		System.out.println("There are " + numOfSolids + " solid trash blocks");
 		for (int i = 0; i <= numOfSolids; i++){
 			while(true){
 				Random rn = new Random();
@@ -108,19 +133,8 @@ class Driver{
 				}
 			}
 		}
-		
-		//makes 15 of the blocks bees
-		for (int i = 0; i < 15; i++){
-			while(true){
-				Random rn = new Random();
-				int x = rn.nextInt(dimention);
-				int y = rn.nextInt(dimention);
-				int z = rn.nextInt(dimention);
-				if (cube[x][y][z].makeBee(i)){
-					break;
-				}
-			}
-		}	
+
+
 	}
 	
 	public static boolean existsinCube(int a, int b, int c){

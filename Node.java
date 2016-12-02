@@ -79,6 +79,7 @@ public class Node{
 			if (!isHive){
 				isBee = true;
 				beeNumber = beeNum;
+				 System.out.println("Bee #" + beeNumber + " (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
 				return true;
 			}//else{
 			//finished = true;
@@ -88,12 +89,11 @@ public class Node{
 	}
 
 	public boolean makeSolid(){
-		if(!isSolid){
-			if(!isBee){
-				if(!isHive){
-					isSolid = true;
-					return true;
-				}
+		if(!isSolid && !isBee){
+			if(!isHive){
+				isSolid = true;
+				//System.out.println("Trash / Solid Block (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
+				return true;
 			}
 		}
 		return false;
