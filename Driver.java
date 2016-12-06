@@ -1,8 +1,12 @@
 package BeeHiveStuff;
-import BeeHiveStuff.Node.keys;
+import BeeHiveStuff.Node;
 import java.util.Scanner;
 import java.util.Random;
-
+import java.util.HashMap;
+/* Yes, I know there are a lot of spelling mistakes.
+ * Don't blame me.
+ * -David
+ */
 class Driver{
 	
 	public static Scanner sc = new Scanner(System.in);
@@ -18,7 +22,7 @@ class Driver{
 		System.out.println("Please enter a number from 25 - 35");
 		dimention = sc.nextInt();
 		cube = new Node[dimention][dimention][dimention];
-		volume = dimention * dimention * dimention;
+		volume = Math.pow(dimention, 3);
 		
 		initCube();	
 //		System.out.println("Please type \"yes\"" to continue with calculation");
@@ -27,12 +31,8 @@ class Driver{
 	
 	//MARK: - Path Finding
 
-	
-	static void findPath(){
-		for (int i = 0; i < 15; i ++){
-			
-		}
-
+	public HashMap floodFill(Node n, HashMap h) {
+		if ()
 	}
 	
 	

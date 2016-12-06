@@ -10,7 +10,7 @@ public class Node{
 	private int beeNumber;
 	private int numberOfMoves;
 	private int hiveNumber;
-	
+	private HashMap distances;
 	private int[] distance = new int[15];
 	
 	private Node[] next = new Node[26];
@@ -25,7 +25,6 @@ public class Node{
 		finished = false;
 		numberOfMoves = 0;
 	}
-	
 	
 	public void calculateNextTo(){
 		next[0] = Driver.cube[X][Y][Z + 1];
@@ -60,7 +59,7 @@ public class Node{
 		return next;
 	}
 	
-	enum keys{
+	public enum keys{
 		X, Y, Z, isSolid, isHive, isBee, beeNumber, finished, numberOfMoves, hiveNumber
 	}
 	
@@ -95,6 +94,13 @@ public class Node{
 				//System.out.println("Trash / Solid Block (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
 				return true;
 			}
+				isBee = true;
+				beeNumber = beeNum;
+				System.out.println("Bee #" + beeNumber + " (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
+				return true;
+			}//else{
+			//finished = true;
+			//}
 		}
 		return false;
 	}
