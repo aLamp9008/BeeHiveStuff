@@ -3,16 +3,16 @@ package BeeHiveStuff;
 public class Node{
 	
 	private int X,Y,Z;
-	private boolean isSolid;
-	private boolean isHive;
-	private boolean isBee;
+	public boolean isSolid;
+	public boolean isHive;
+	public boolean isBee;
 	private boolean finished;
 	private int beeNumber;
 	private int numberOfMoves;
 	private int hiveNumber;
-	private HashMap distances;
+	//public HashMap distances;
 	private int[] distance = new int[15];
-	
+
 	private Node[] next = new Node[26];
 	
 	public Node(int X,int Y, int Z){
@@ -25,7 +25,6 @@ public class Node{
 		finished = false;
 		numberOfMoves = 0;
 	}
-	
 	public void calculateNextTo(){
 		next[0] = Driver.cube[X][Y][Z + 1];
 		next[1] = Driver.cube[X][Y][Z - 1];
@@ -59,10 +58,10 @@ public class Node{
 		return next;
 	}
 	
-	public enum keys{
-		X, Y, Z, isSolid, isHive, isBee, beeNumber, finished, numberOfMoves, hiveNumber
-	}
-	
+	//public enum keys{
+	//	X, Y, Z, isSolid, isHive, isBee, beeNumber, finished, numberOfMoves, hiveNumber
+	//}
+	//Blame all these awful "make" methods on Alden
 	public void makeHive(int num){
 		isHive = true;
 		hiveNumber = num;
@@ -72,7 +71,7 @@ public class Node{
 			System.out.println("Ending hive node (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
 		}
 	}
-
+	//Bees are only not solid because they move one by one.
 	public boolean makeBee(int beeNum){
 		if (!isSolid && !isBee){
 			if (!isHive){
@@ -104,8 +103,8 @@ public class Node{
 		}
 		return false;
 	}
-	
-	public String get(keys key){
+	//Blame Alden for this monstrosity.
+	/*public String get(keys key){
 		switch (key){
 			case X : return Integer.toString(this.X);
 			case Y : return Integer.toString(this.Y);
@@ -120,7 +119,7 @@ public class Node{
 			//case nodeNumber : return Integer.toString(nodeNumber);
 			default : return "";
 		}
-	}
+	}*/
 	
 	
 }

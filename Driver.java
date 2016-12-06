@@ -28,13 +28,31 @@ class Driver{
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
 		
-	
 	//MARK: - Path Finding
 
-	public HashMap floodFill(Node n, HashMap h) {
-		if ()
-	}
-	
+	/*public HashMap<Node, int> floodFill(Node n, HashMap<Node, int> h, int c) {
+		if (n.isSolid)
+			return h;
+		c++;
+		if (h.containsKey(n)) {
+			if (h.get(n) < c) {
+				HashMap<Node, int> temp = h;
+				n.calculateNextTo();
+				for (Node j : n.getNextTo()) {
+					temp = floodFill(n, temp, c);
+				}
+			}
+			return temp;
+		}
+		h.put(n, c);
+		HashMap<Node, int> temp = h;
+		n.calculateNextTo();
+		for (Node j : n.getNextTo()) {
+			temp = floodFill(n, temp, c);
+		}
+		return temp;
+	}*/
+	//REDO AND LOGIC TEST ^^
 	
 	
 	
