@@ -22,19 +22,37 @@ class Driver{
 		System.out.println("Please enter a number from 25 - 35");
 		dimention = sc.nextInt();
 		cube = new Node[dimention][dimention][dimention];
-		volume = Math.pow(dimention, 3);
+		volume = (int)Math.pow(dimention, 3);
 		
 		initCube();	
+		System.out.println("Starting...");
+		HashMap<Node, Integer> test = new HashMap<Node, Integer>();
+		test = floodFill(cube[0][0][0], test, -1);
+		System.out.println("Done!");
+		System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
 		
 	//MARK: - Path Finding
 
-	/*public HashMap<Node, int> floodFill(Node n, HashMap<Node, int> h, int c) {
+	public static HashMap<Node, Integer> floodFill(Node n, HashMap<Node, Integer> h, int c) {
 		if (n.isSolid)
 			return h;
-		c++;
+		int d = c;
+		d++;
 		if (h.containsKey(n)) {
+			if (h.get(n) < d)
+				return h;
+		}
+		HashMap<Node, Integer> temp = h;
+		n.calculateNextTo();
+		temp.put(n, d);
+		for (Node j : n.getNextTo()) {
+			if (j != null)
+				temp = floodFill(j, temp, d);
+		}
+		return temp;
+		/*if (h.containsKey(n)) {
 			if (h.get(n) < c) {
 				HashMap<Node, int> temp = h;
 				n.calculateNextTo();
@@ -50,8 +68,8 @@ class Driver{
 		for (Node j : n.getNextTo()) {
 			temp = floodFill(n, temp, c);
 		}
-		return temp;
-	}*/
+		return temp;*/
+	}
 	//REDO AND LOGIC TEST ^^
 	
 	
