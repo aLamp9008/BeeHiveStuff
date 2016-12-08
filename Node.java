@@ -2,7 +2,7 @@ package BeeHiveStuff;
 //import BeeHiveStuff.Driver;
 public class Node{
 	
-	private int X,Y,Z;
+	public int X,Y,Z;
 	public boolean isSolid;
 	public boolean isHive;
 	public boolean isBee;

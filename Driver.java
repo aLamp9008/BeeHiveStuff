@@ -1,5 +1,6 @@
 package BeeHiveStuff;
 import BeeHiveStuff.Node;
+import java.util.Stack;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.HashMap;
@@ -26,17 +27,19 @@ class Driver{
 		
 		initCube();	
 		System.out.println("Starting...");
-		HashMap<Node, Integer> test = new HashMap<Node, Integer>();
-		test = floodFill(cube[0][0][0], test, -1);
+		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
+		//test = floodFill(cube[0][0][0], test, -1);
+		HashMap<Node, Integer> test = floodFill(cube[0][0][0]);
 		System.out.println("Done!");
 		System.out.println(test.get(cube[0][0][1]));
+		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
 		
 	//MARK: - Path Finding
 
-	public static HashMap<Node, Integer> floodFill(Node n, HashMap<Node, Integer> h, int c) {
-		if (n.isSolid)
+	public static HashMap<Node, Integer> floodFill(Node n) {
+		/*if (n.isSolid)
 			return h;
 		int d = c;
 		d++;
@@ -52,23 +55,40 @@ class Driver{
 				temp = floodFill(j, temp, d);
 		}
 		return temp;
-		/*if (h.containsKey(n)) {
-			if (h.get(n) < c) {
-				HashMap<Node, int> temp = h;
-				n.calculateNextTo();
-				for (Node j : n.getNextTo()) {
-					temp = floodFill(n, temp, c);
-				}
-			}
-			return temp;
-		}
-		h.put(n, c);
-		HashMap<Node, int> temp = h;
+		*/
+		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
+		HashMap<Node, Node> pointed = new HashMap<Node, Node>();
+		Stack<Node> toDo = new Stack<Node>();
+		paths.put(n, 0);
 		n.calculateNextTo();
 		for (Node j : n.getNextTo()) {
-			temp = floodFill(n, temp, c);
+			if (j != null) {
+				toDo.push(j);
+				pointed.put(j, n);
+			}
 		}
-		return temp;*/
+		while (!toDo.empty()) {
+			Node curr = toDo.pop();
+			if (curr.isSolid)
+				continue;
+			int currLen = paths.get(pointed.get(curr)) + 1; //The length of the previous path plus 1
+			if (paths.containsKey(curr)) {
+				if (paths.get(curr) <= currLen) {
+					continue;
+
+				}
+			}
+			curr.calculateNextTo();
+			paths.put(curr, currLen);
+			System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + currLen + "\t");
+			for (Node j : curr.getNextTo()) {
+				if (j != null) {
+					toDo.push(j);
+					pointed.put(j, curr);
+				}
+			}
+		}
+		return paths;
 	}
 	//REDO AND LOGIC TEST ^^
 	
