@@ -37,7 +37,7 @@ class Driver{
 		//test = floodFill(cube[0][0][0], test, -1);
 		HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
 		System.out.println("Done!");
-		System.out.println(test.get(d.cube[0][0][2]));
+		System.out.println(test.get(d.cube[0][0][3]));
 		//Node f = test.get(d.cube[0][0][2]);
 		System.out.println(d.cube[0][0][0].getNextTo().length);
 		/*for (Node j : d.cube[0][0][0].getNextTo()) {
@@ -49,7 +49,7 @@ class Driver{
 			System.out.println("(" + f.X + ",\t" + f.Y + ",\t" + f.Z + ") ->");
 			f = test.pointed.get(f);
 		} while (f != d.cube[0][0][0]);*/
-		System.out.println(d.cube[0][0][2].isSolid);
+		System.out.println(d.cube[0][0][3].isSolid);
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
