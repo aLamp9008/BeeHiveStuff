@@ -1,6 +1,8 @@
 package BeeHiveStuff;
 import BeeHiveStuff.Node;
-import java.util.Stack;
+//import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+import java.util.ArrayDeque;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.HashMap;
@@ -58,17 +60,17 @@ class Driver{
 		*/
 		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
 		HashMap<Node, Node> pointed = new HashMap<Node, Node>();
-		Stack<Node> toDo = new Stack<Node>();
+		ArrayDeque<Node> toDo = new ArrayDeque<Node>();
 		paths.put(n, 0);
 		n.calculateNextTo();
 		for (Node j : n.getNextTo()) {
 			if (j != null) {
-				toDo.push(j);
+				toDo.add(j);
 				pointed.put(j, n);
 			}
 		}
-		while (!toDo.empty()) {
-			Node curr = toDo.pop();
+		while (!toDo.isEmpty()) {
+			Node curr = toDo.poll();
 			if (curr.isSolid)
 				continue;
 			int currLen = paths.get(pointed.get(curr)) + 1; //The length of the previous path plus 1
@@ -81,9 +83,10 @@ class Driver{
 			curr.calculateNextTo();
 			paths.put(curr, currLen);
 			System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + currLen + "\t");
+			//TimeUnit.SECONDS.sleep(1);
 			for (Node j : curr.getNextTo()) {
 				if (j != null) {
-					toDo.push(j);
+					toDo.add(j);
 					pointed.put(j, curr);
 				}
 			}
