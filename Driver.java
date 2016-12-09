@@ -6,6 +6,8 @@ import java.util.ArrayDeque;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 /* Yes, I know there are a lot of spelling mistakes.
  * Don't blame me.
  * -David
@@ -38,6 +40,11 @@ class Driver{
 		HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
 		System.out.println("Done!");
 		System.out.println(test.get(d.cube[0][0][3]));
+		//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
+
+		for (Node n : d.bees) {
+
+		}
 		//Node f = test.get(d.cube[0][0][2]);
 		System.out.println(d.cube[0][0][0].getNextTo().length);
 		/*for (Node j : d.cube[0][0][0].getNextTo()) {
