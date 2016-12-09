@@ -12,35 +12,51 @@ import java.util.HashMap;
  */
 class Driver{
 	
-	public static Scanner sc = new Scanner(System.in);
-	static int dimention;
+	public Scanner sc;// = new Scanner(System.in);
+	public int dimention;
 	
-	public static Node[][][] cube;
-	public static int volume;
-	public static Node[] hives = new Node[15];
-	public static Node[] bees = new Node[15];
-	
-	public static void main(String[] args){
-		
-		System.out.println("Please enter a number from 25 - 35");
-		dimention = sc.nextInt();
+	public Node[][][] cube;
+	public int volume;
+	public Node[] hives = new Node[15];
+	public Node[] bees = new Node[15];
+	public Driver(int dimention) {
+		this.dimention = dimention;
 		cube = new Node[dimention][dimention][dimention];
 		volume = (int)Math.pow(dimention, 3);
+		sc = new Scanner(System.in);
+	}
+	public static void main(String[] args){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter a number from 25 - 35");
+		int dimention = sc.nextInt();
+		Driver d = new Driver(dimention);
 		
-		initCube();	
+		d.initCube();	
 		System.out.println("Starting...");
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
 		//test = floodFill(cube[0][0][0], test, -1);
-		HashMap<Node, Integer> test = floodFill(cube[0][0][0]);
+		Result test = d.floodFill(d.cube[0][0][0]);
 		System.out.println("Done!");
-		System.out.println(test.get(cube[0][0][1]));
+		System.out.println(test.paths.get(d.cube[0][0][2]));
+		Node f = test.pointed.get(d.cube[0][0][2]);
+		System.out.println(d.cube[0][0][0].getNextTo().length);
+		for (Node j : d.cube[0][0][0].getNextTo()) {
+			if (j != null) {
+				System.out.println("(" + j.X + ",\t" + j.Y + ",\t" + j.Z + ")");
+			}
+		}
+		do {
+			System.out.println("(" + f.X + ",\t" + f.Y + ",\t" + f.Z + ") ->");
+			f = test.pointed.get(f);
+		} while (f != d.cube[0][0][0]);
+		System.out.println(d.cube[0][0][2].isSolid);
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
 		
 	//MARK: - Path Finding
 
-	public static HashMap<Node, Integer> floodFill(Node n) {
+	public Result floodFill(Node n) {
 		/*if (n.isSolid)
 			return h;
 		int d = c;
@@ -58,40 +74,48 @@ class Driver{
 		}
 		return temp;
 		*/
+
 		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
 		HashMap<Node, Node> pointed = new HashMap<Node, Node>();
+		HashMap<Node, Node> potentialPointed = new HashMap<Node, Node>();
 		ArrayDeque<Node> toDo = new ArrayDeque<Node>();
 		paths.put(n, 0);
 		n.calculateNextTo();
 		for (Node j : n.getNextTo()) {
 			if (j != null) {
 				toDo.add(j);
-				pointed.put(j, n);
+				potentialPointed.put(j, n);
 			}
 		}
 		while (!toDo.isEmpty()) {
 			Node curr = toDo.poll();
 			if (curr.isSolid)
 				continue;
-			int currLen = paths.get(pointed.get(curr)) + 1; //The length of the previous path plus 1
+			int currLen = paths.get(potentialPointed.get(curr)) + 1; //The length of the previous path plus 1
 			if (paths.containsKey(curr)) {
 				if (paths.get(curr) <= currLen) {
 					continue;
 
 				}
 			}
+			pointed.put(curr, potentialPointed.get(curr));
 			curr.calculateNextTo();
 			paths.put(curr, currLen);
-			System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + currLen + "\t");
-			//TimeUnit.SECONDS.sleep(1);
+			System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + pointed.get(curr).X + "\t" + pointed.get(curr).Y + "\t" + pointed.get(curr).Z + "\t" + currLen);
+
+			/*try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (Exception e) {
+				System.err.println("Something went wrong while sleeping.");
+			}*/
 			for (Node j : curr.getNextTo()) {
 				if (j != null) {
 					toDo.add(j);
-					pointed.put(j, curr);
+					potentialPointed.put(j, curr);
 				}
 			}
 		}
-		return paths;
+		return new Result(paths, pointed);
 	}
 	//REDO AND LOGIC TEST ^^
 	
@@ -108,13 +132,13 @@ class Driver{
 	//MARK: - Init Cube
 	
 	//creates the blocks in a cube as solid, hive and bee
-	static void initCube(){
+	public void initCube(){
 		//Makes each a new Node
 		int count = 0;
 		for (int i = 0; i < dimention; i ++){
 			for (int j = 0; j < dimention; j ++){
 				for (int k = 0; k < dimention; k ++){
-					cube[i][j][k] = new Node(i, j, k);
+					cube[i][j][k] = new Node(i, j, k, cube); //Note: Should pass reference to cube, so changes in cube will affect Nodes
 					count ++;
 				}
 			}
@@ -194,7 +218,7 @@ class Driver{
 
 	}
 	
-	public static boolean existsinCube(int a, int b, int c){
+	public boolean existsinCube(int a, int b, int c){
 	    try{
 	      Node d = cube[a][b][c];
 	      return true;

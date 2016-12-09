@@ -1,4 +1,5 @@
 package BeeHiveStuff;
+import java.util.ArrayList;
 //import BeeHiveStuff.Driver;
 public class Node{
 	
@@ -12,13 +13,14 @@ public class Node{
 	private int hiveNumber;
 	//public HashMap distances;
 	private int[] distance = new int[15];
-
+	private Node[][][] cube;
 	private Node[] next = new Node[26];
 	
-	public Node(int X,int Y, int Z){
+	public Node(int X,int Y, int Z, Node[][][] cube){
 		this.X = X;
 		this.Y = Y;
 		this.Z = Z;
+		this.cube = cube;
 		isSolid = false;
 		isHive = false;
 		isBee = false;
@@ -28,113 +30,125 @@ public class Node{
 	//Blame Alden and my apathy for this monstrosity.
 	public void calculateNextTo(){
         /*
-        next[0] = Driver.cube[X][Y][Z + 1];
-        next[1] = Driver.cube[X][Y][Z - 1];
-        next[2] = Driver.cube[X][Y + 1][Z];
-        next[3] = Driver.cube[X][Y - 1][Z];
-        next[4] = Driver.cube[X][Y + 1][Z + 1];
-        next[5] = Driver.cube[X][Y + 1][Z - 1];
-        next[6] = Driver.cube[X][Y - 1][Z + 1];
-        next[7] = Driver.cube[X][Y - 1][Z - 1];
-        next[8] = Driver.cube[X + 1][Y][Z];
-        next[9] = Driver.cube[X - 1][Y][Z];
-        next[10] = Driver.cube[X + 1][Y + 1][Z + 1];
-        next[11] = Driver.cube[X + 1][Y + 1][Z - 1];
-        next[12] = Driver.cube[X + 1][Y - 1][Z + 1];
-        next[13] = Driver.cube[X + 1][Y - 1][Z - 1];
-        next[14] = Driver.cube[X - 1][Y + 1][Z + 1];
-        next[15] = Driver.cube[X - 1][Y + 1][Z - 1];
-        next[16] = Driver.cube[X - 1][Y - 1][Z + 1];
-        next[17] = Driver.cube[X - 1][Y - 1][Z - 1];
-        next[18] = Driver.cube[X - 1][Y + 1][Z];
-        next[19] = Driver.cube[X - 1][Y - 1][Z];
-        next[20] = Driver.cube[X - 1][Y][Z + 1];
-        next[21] = Driver.cube[X - 1][Y][Z - 1];
-        next[22] = Driver.cube[X + 1][Y + 1][Z];
-        next[23] = Driver.cube[X + 1][Y - 1][Z];
-        next[24] = Driver.cube[X + 1][Y][Z + 1];
-        next[25] = Driver.cube[X + 1][Y][Z - 1];
+        next[0] = cube[X][Y][Z + 1];
+        next[1] = cube[X][Y][Z - 1];
+        next[2] = cube[X][Y + 1][Z];
+        next[3] = cube[X][Y - 1][Z];
+        next[4] = cube[X][Y + 1][Z + 1];
+        next[5] = cube[X][Y + 1][Z - 1];
+        next[6] = cube[X][Y - 1][Z + 1];
+        next[7] = cube[X][Y - 1][Z - 1];
+        next[8] = cube[X + 1][Y][Z];
+        next[9] = cube[X - 1][Y][Z];
+        next[10] = cube[X + 1][Y + 1][Z + 1];
+        next[11] = cube[X + 1][Y + 1][Z - 1];
+        next[12] = cube[X + 1][Y - 1][Z + 1];
+        next[13] = cube[X + 1][Y - 1][Z - 1];
+        next[14] = cube[X - 1][Y + 1][Z + 1];
+        next[15] = cube[X - 1][Y + 1][Z - 1];
+        next[16] = cube[X - 1][Y - 1][Z + 1];
+        next[17] = cube[X - 1][Y - 1][Z - 1];
+        next[18] = cube[X - 1][Y + 1][Z];
+        next[19] = cube[X - 1][Y - 1][Z];
+        next[20] = cube[X - 1][Y][Z + 1];
+        next[21] = cube[X - 1][Y][Z - 1];
+        next[22] = cube[X + 1][Y + 1][Z];
+        next[23] = cube[X + 1][Y - 1][Z];
+        next[24] = cube[X + 1][Y][Z + 1];
+        next[25] = cube[X + 1][Y][Z - 1];
         */
         ///*
-        try{
-         next[0] = (Driver.cube[X][Y][Z + 1].isSolid) ? null : Driver.cube[X][Y][Z + 1];
+        /*try{
+         next[0] = (cube[X][Y][Z + 1].isSolid) ? null : cube[X][Y][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[1] = (Driver.cube[X][Y][Z - 1].isSolid) ? null : Driver.cube[X][Y][Z - 1];
+        next[1] = (cube[X][Y][Z - 1].isSolid) ? null : cube[X][Y][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[2] = (Driver.cube[X][Y + 1][Z].isSolid) ? null : Driver.cube[X][Y + 1][Z];
+        next[2] = (cube[X][Y + 1][Z].isSolid) ? null : cube[X][Y + 1][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[3] = (Driver.cube[X][Y - 1][Z].isSolid) ? null : Driver.cube[X][Y - 1][Z];
+        next[3] = (cube[X][Y - 1][Z].isSolid) ? null : cube[X][Y - 1][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[4] = (Driver.cube[X][Y + 1][Z + 1].isSolid) ? null : Driver.cube[X][Y + 1][Z + 1];
+        next[4] = (cube[X][Y + 1][Z + 1].isSolid) ? null : cube[X][Y + 1][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[5] = (Driver.cube[X][Y + 1][Z - 1].isSolid) ? null : Driver.cube[X][Y + 1][Z - 1];
+        next[5] = (cube[X][Y + 1][Z - 1].isSolid) ? null : cube[X][Y + 1][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[6] = (Driver.cube[X][Y - 1][Z + 1].isSolid) ? null : Driver.cube[X][Y - 1][Z + 1];
+        next[6] = (cube[X][Y - 1][Z + 1].isSolid) ? null : cube[X][Y - 1][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[7] = (Driver.cube[X][Y - 1][Z - 1].isSolid) ? null : Driver.cube[X][Y - 1][Z - 1];
+        next[7] = (cube[X][Y - 1][Z - 1].isSolid) ? null : cube[X][Y - 1][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[8] = (Driver.cube[X + 1][Y][Z].isSolid) ? null : Driver.cube[X + 1][Y][Z];
+        next[8] = (cube[X + 1][Y][Z].isSolid) ? null : cube[X + 1][Y][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[9] = (Driver.cube[X - 1][Y][Z].isSolid) ? null : Driver.cube[X - 1][Y][Z];
+        next[9] = (cube[X - 1][Y][Z].isSolid) ? null : cube[X - 1][Y][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[10] = (Driver.cube[X + 1][Y + 1][Z + 1].isSolid) ? null : Driver.cube[X + 1][Y + 1][Z + 1];
+        next[10] = (cube[X + 1][Y + 1][Z + 1].isSolid) ? null : cube[X + 1][Y + 1][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[11] = (Driver.cube[X + 1][Y + 1][Z - 1].isSolid) ? null : Driver.cube[X + 1][Y + 1][Z - 1];
+        next[11] = (cube[X + 1][Y + 1][Z - 1].isSolid) ? null : cube[X + 1][Y + 1][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[12] = (Driver.cube[X + 1][Y - 1][Z + 1].isSolid) ? null : Driver.cube[X + 1][Y - 1][Z + 1];
+        next[12] = (cube[X + 1][Y - 1][Z + 1].isSolid) ? null : cube[X + 1][Y - 1][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[13] = (Driver.cube[X + 1][Y - 1][Z - 1].isSolid) ? null : Driver.cube[X + 1][Y - 1][Z - 1];
+        next[13] = (cube[X + 1][Y - 1][Z - 1].isSolid) ? null : cube[X + 1][Y - 1][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[14] = (Driver.cube[X - 1][Y + 1][Z + 1].isSolid) ? null : Driver.cube[X - 1][Y + 1][Z + 1];
+        next[14] = (cube[X - 1][Y + 1][Z + 1].isSolid) ? null : cube[X - 1][Y + 1][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[15] = (Driver.cube[X - 1][Y + 1][Z - 1].isSolid) ? null : Driver.cube[X - 1][Y + 1][Z - 1];
+        next[15] = (cube[X - 1][Y + 1][Z - 1].isSolid) ? null : cube[X - 1][Y + 1][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[16] = (Driver.cube[X - 1][Y - 1][Z + 1].isSolid) ? null : Driver.cube[X - 1][Y - 1][Z + 1];
+        next[16] = (cube[X - 1][Y - 1][Z + 1].isSolid) ? null : cube[X - 1][Y - 1][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[17] = (Driver.cube[X - 1][Y - 1][Z - 1].isSolid) ? null : Driver.cube[X - 1][Y - 1][Z - 1];
+        next[17] = (cube[X - 1][Y - 1][Z - 1].isSolid) ? null : cube[X - 1][Y - 1][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[18] = (Driver.cube[X - 1][Y + 1][Z].isSolid) ? null : Driver.cube[X - 1][Y + 1][Z];
+        next[18] = (cube[X - 1][Y + 1][Z].isSolid) ? null : cube[X - 1][Y + 1][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[19] = (Driver.cube[X - 1][Y - 1][Z].isSolid) ? null : Driver.cube[X - 1][Y - 1][Z];
+        next[19] = (cube[X - 1][Y - 1][Z].isSolid) ? null : cube[X - 1][Y - 1][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[20] = (Driver.cube[X - 1][Y][Z + 1].isSolid) ? null : Driver.cube[X - 1][Y][Z + 1];
+        next[20] = (cube[X - 1][Y][Z + 1].isSolid) ? null : cube[X - 1][Y][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[21] = (Driver.cube[X - 1][Y][Z - 1].isSolid) ? null : Driver.cube[X - 1][Y][Z - 1];
+        next[21] = (cube[X - 1][Y][Z - 1].isSolid) ? null : cube[X - 1][Y][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[22] = (Driver.cube[X + 1][Y + 1][Z].isSolid) ? null : Driver.cube[X + 1][Y + 1][Z];
+        next[22] = (cube[X + 1][Y + 1][Z].isSolid) ? null : cube[X + 1][Y + 1][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[23] = (Driver.cube[X + 1][Y - 1][Z].isSolid) ? null : Driver.cube[X + 1][Y - 1][Z];
+        next[23] = (cube[X + 1][Y - 1][Z].isSolid) ? null : cube[X + 1][Y - 1][Z];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[24] = (Driver.cube[X + 1][Y][Z + 1].isSolid) ? null : Driver.cube[X + 1][Y][Z + 1];
+        next[24] = (cube[X + 1][Y][Z + 1].isSolid) ? null : cube[X + 1][Y][Z + 1];
         }catch(ArrayIndexOutOfBoundsException e){}
         try{
-        next[25] = (Driver.cube[X + 1][Y][Z - 1].isSolid) ? null : Driver.cube[X + 1][Y][Z - 1];
+        next[25] = (cube[X + 1][Y][Z - 1].isSolid) ? null : cube[X + 1][Y][Z - 1];
         }catch(ArrayIndexOutOfBoundsException e){}
+        */
+        ArrayList<Node> a = new ArrayList<Node>();
+        for (int i = -1; i < 2; i++) {
+        	for (int j = -1; j < 2; j++) {
+        		for (int k = -1; k < 2; k++) {
+        			if (!(i == 0 && j == 0 && k == 0) && !(i + X > cube.length - 1 || i + X < 0 || j + Y > cube.length - 1 || j + Y < 0 || k + Z > cube.length - 1 || k + Z < 0)) {
+        				if (!cube[X + i][Y + j][Z + k].isSolid) a.add(cube[X + i][Y + j][Z + k]);
+        			}
+        		}
+        	}
          //*/
+        }
+        next = a.toArray(new Node[a.size()]);
     }
 	
 	public Node[] getNextTo(){
@@ -144,7 +158,7 @@ public class Node{
 	//public enum keys{
 	//	X, Y, Z, isSolid, isHive, isBee, beeNumber, finished, numberOfMoves, hiveNumber
 	//}
-	//Blame all these awful "make" methods on Alden
+	//Blame all these awful "make" methods on Alden, jk lol
 	public void makeHive(int num){
 		isHive = true;
 		hiveNumber = num;
