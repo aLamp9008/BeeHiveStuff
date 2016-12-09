@@ -35,10 +35,10 @@ class Driver{
 		System.out.println("Starting...");
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
 		//test = floodFill(cube[0][0][0], test, -1);
-		Result test = d.floodFill(d.cube[0][0][0]);
+		HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
 		System.out.println("Done!");
-		System.out.println(test.paths.get(d.cube[0][0][2]));
-		Node f = test.pointed.get(d.cube[0][0][2]);
+		System.out.println(test.get(d.cube[0][0][2]));
+		//Node f = test.get(d.cube[0][0][2]);
 		System.out.println(d.cube[0][0][0].getNextTo().length);
 		/*for (Node j : d.cube[0][0][0].getNextTo()) {
 			if (j != null) {
@@ -56,7 +56,7 @@ class Driver{
 		
 	//MARK: - Path Finding
 
-	public Result floodFill(Node n) {
+	public HashMap<Node, Integer> floodFill(Node n) {
 		/*if (n.isSolid)
 			return h;
 		int d = c;
@@ -76,46 +76,46 @@ class Driver{
 		*/
 
 		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
-		HashMap<Node, Node> pointed = new HashMap<Node, Node>();
-		HashMap<Node, Node> potentialPointed = new HashMap<Node, Node>();
-		ArrayDeque<Node> toDo = new ArrayDeque<Node>();
+		//HashMap<Node, Node> pointed = new HashMap<Node, Node>();
+		//HashMap<Node, Node> potentialPointed = new HashMap<Node, Node>();
+		ArrayDeque<Node[]> toDo = new ArrayDeque<Node[]>();
 		paths.put(n, 0);
 		n.calculateNextTo();
 		for (Node j : n.getNextTo()) {
 			if (j != null) {
-				toDo.add(j);
-				potentialPointed.put(j, n);
+				toDo.add(new Node[] {j, n});
+				//potentialPointed.put(j, n);
 			}
 		}
 		while (!toDo.isEmpty()) {
-			Node curr = toDo.poll();
-			if (curr.isSolid)
+			Node[] curr = toDo.poll();
+			if (curr[0].isSolid)
 				continue;
-			int currLen = paths.get(potentialPointed.get(curr)) + 1; //The length of the previous path plus 1
-			if (paths.containsKey(curr)) {
-				if (paths.get(curr) <= currLen) {
+			int currLen = paths.get(curr[1]) + 1; //The length of the previous path plus 1
+			if (paths.containsKey(curr[0])) {
+				if (paths.get(curr[0]) <= currLen) {
 					continue;
 
 				}
 			}
-			pointed.put(curr, potentialPointed.get(curr));
-			curr.calculateNextTo();
-			paths.put(curr, currLen);
-			System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + pointed.get(curr).X + "\t" + pointed.get(curr).Y + "\t" + pointed.get(curr).Z + "\t" + currLen);
+			//pointed.put(curr, potentialPointed.get(curr));
+			curr[0].calculateNextTo();
+			paths.put(curr[0], currLen);
+			//System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + pointed.get(curr).X + "\t" + pointed.get(curr).Y + "\t" + pointed.get(curr).Z + "\t" + currLen);
 
 			/*try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (Exception e) {
 				System.err.println("Something went wrong while sleeping.");
 			}*/
-			for (Node j : curr.getNextTo()) {
+			for (Node j : curr[0].getNextTo()) {
 				if (j != null) {
-					toDo.add(j);
-					potentialPointed.put(j, curr);
+					toDo.add(new Node[] {j, curr[0]});
+					//potentialPointed.put(j, curr);
 				}
 			}
 		}
-		return new Result(paths, pointed);
+		return paths;
 	}
 	//REDO AND LOGIC TEST ^^
 	
