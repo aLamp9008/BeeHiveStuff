@@ -2,18 +2,18 @@ package BeeHiveStuff;
 //import BeeHiveStuff.Driver;
 public class Node{
 	
-	private int X,Y,Z;
-	private boolean isSolid;
+	public int X,Y,Z;
+	public boolean isSolid;
 	private boolean isHive;
-	private boolean isBee;
-	private boolean finished;
-	private int beeNumber;
+	public boolean isBee;
+	public boolean finished;
+	public int beeNumber;
 	private int numberOfMoves;
-	private int hiveNumber;
+	public int hiveNumber;
 	
-	private int[] distance = new int[15];
+	public Integer[] distance = new Integer[15];
 	
-	private Node[] next = new Node[26];
+	public Node[] next = new Node[26];
 	
 	public Node(int X,int Y, int Z){
 		this.X = X;
@@ -24,37 +24,57 @@ public class Node{
 		isBee = false;
 		finished = false;
 		numberOfMoves = 0;
+		for (int i = 0; i < 15; i++){
+			this.distance[i] = null;
+		}
 	}
 	
+	public void toNull(){
+		for (int i = 0; i < 15; i++){
+			this.distance[i] = null;
+			this.finished = false;
+		}
+	}
+	
+	private void getNextTo(int number, int a, int b, int c) {
+		try{
+			 next[number] = (Driver.cube[a][b][c].isSolid) ? null : Driver.cube[a][b][c];
+		}catch(ArrayIndexOutOfBoundsException e){
+			
+		}
+	}
 	
 	public void calculateNextTo(){
-		next[0] = Driver.cube[X][Y][Z + 1];
-		next[1] = Driver.cube[X][Y][Z - 1];
-		next[2] = Driver.cube[X][Y + 1][Z];
-		next[3] = Driver.cube[X][Y - 1][Z];
-		next[4] = Driver.cube[X][Y + 1][Z + 1];
-		next[5] = Driver.cube[X][Y + 1][Z - 1];
-		next[6] = Driver.cube[X][Y - 1][Z + 1];
-		next[7] = Driver.cube[X][Y - 1][Z - 1];
-		next[8] = Driver.cube[X + 1][Y][Z];
-		next[9] = Driver.cube[X - 1][Y][Z];
-		next[10] = Driver.cube[X + 1][Y + 1][Z + 1];
-		next[11] = Driver.cube[X + 1][Y + 1][Z - 1];
-		next[12] = Driver.cube[X + 1][Y - 1][Z + 1];
-		next[13] = Driver.cube[X + 1][Y - 1][Z - 1];
-		next[14] = Driver.cube[X - 1][Y + 1][Z + 1];
-		next[15] = Driver.cube[X - 1][Y + 1][Z - 1];
-		next[16] = Driver.cube[X - 1][Y - 1][Z + 1];
-		next[17] = Driver.cube[X - 1][Y - 1][Z - 1];
-		next[18] = Driver.cube[X - 1][Y + 1][Z];
-		next[19] = Driver.cube[X - 1][Y - 1][Z];
-		next[20] = Driver.cube[X - 1][Y][Z + 1];
-		next[21] = Driver.cube[X - 1][Y][Z - 1];
-		next[22] = Driver.cube[X + 1][Y + 1][Z];
-		next[23] = Driver.cube[X + 1][Y - 1][Z];
-		next[24] = Driver.cube[X + 1][Y][Z + 1];
-		next[25] = Driver.cube[X + 1][Y][Z - 1];
+		getNextTo(0, X, Y, Z + 1);
+		getNextTo(1, X, Y, Z - 1);
+		getNextTo(2, X, Y + 1, Z);
+		getNextTo(3, X, Y - 1, Z);
+		getNextTo(4, X, Y + 1, Z + 1);
+		getNextTo(5, X, Y + 1, Z - 1);
+		getNextTo(6, X, Y - 1, Z + 1);
+		getNextTo(7, X, Y - 1, Z - 1);
+		getNextTo(8, X + 1, Y, Z);
+		getNextTo(9, X - 1, Y, Z);
+		getNextTo(10, X + 1, Y + 1, Z + 1);
+		getNextTo(11, X + 1, Y + 1, Z - 1);
+		getNextTo(12, X + 1, Y - 1, Z + 1);
+		getNextTo(13, X + 1, Y - 1, Z - 1);
+		getNextTo(14, X - 1, Y + 1, Z + 1);
+		getNextTo(15, X - 1, Y + 1, Z - 1);
+		getNextTo(16, X - 1, Y - 1, Z + 1);
+		getNextTo(17, X - 1, Y - 1, Z - 1);
+		getNextTo(18, X - 1, Y + 1, Z);
+		getNextTo(19, X - 1, Y - 1, Z);
+		getNextTo(20, X - 1, Y, Z + 1);
+		getNextTo(21, X - 1, Y, Z - 1);
+		getNextTo(22, X + 1, Y + 1, Z);
+		getNextTo(23, X + 1, Y - 1, Z);
+		getNextTo(24, X + 1, Y, Z + 1);
+		getNextTo(25, X + 1, Y, Z - 1);
 	}
+	
+	
+	
 	
 	public Node[] getNextTo(){
 		return next;
@@ -98,23 +118,4 @@ public class Node{
 		}
 		return false;
 	}
-	
-	public String get(keys key){
-		switch (key){
-			case X : return Integer.toString(this.X);
-			case Y : return Integer.toString(this.Y);
-			case Z : return Integer.toString(this.Z);
-			case beeNumber : return (isBee) ? Integer.toString(beeNumber) : null;
-			case isSolid : return (isSolid) ? "true" : "false";
-			case isBee: return (isBee) ? "true" : "false";
-			case isHive : return (isHive) ? "true" : "false";
-			case finished : return (finished) ? "true" : "false";
-			case numberOfMoves: return Integer.toString(numberOfMoves);
-			case hiveNumber : return Integer.toString(hiveNumber);
-			//case nodeNumber : return Integer.toString(nodeNumber);
-			default : return "";
-		}
-	}
-	
-	
 }
