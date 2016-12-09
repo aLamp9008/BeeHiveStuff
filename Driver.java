@@ -40,7 +40,7 @@ class Driver{
 		System.out.println(test.paths.get(d.cube[0][0][2]));
 		Node f = test.pointed.get(d.cube[0][0][2]);
 		System.out.println(d.cube[0][0][0].getNextTo().length);
-		for (Node j : d.cube[0][0][0].getNextTo()) {
+		/*for (Node j : d.cube[0][0][0].getNextTo()) {
 			if (j != null) {
 				System.out.println("(" + j.X + ",\t" + j.Y + ",\t" + j.Z + ")");
 			}
@@ -48,7 +48,7 @@ class Driver{
 		do {
 			System.out.println("(" + f.X + ",\t" + f.Y + ",\t" + f.Z + ") ->");
 			f = test.pointed.get(f);
-		} while (f != d.cube[0][0][0]);
+		} while (f != d.cube[0][0][0]);*/
 		System.out.println(d.cube[0][0][2].isSolid);
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
