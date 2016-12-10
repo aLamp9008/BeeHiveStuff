@@ -7,54 +7,73 @@ import java.util.List;
 import java.util.ArrayList;
 
 class Driver{
-	
+
 	public static Scanner sc = new Scanner(System.in);
 	static int dimention;
-	
+
 	public static Node[][][] cube;
 	public static int volume;
 	public static int[][] hive = new int[15][3];
 	public static int[][] bees = new int[15][3];
-	
+
 	//static int totalMoves = 0;
 	static int[] movesPerBee1 = new int[15];
 	static int[] movesPerBee2 = new int[15];
-	
+	static int[] movesPerBeeKnapsack = new int[15];
+
 	public static void main(String[] args){
-		System.out.println("Do you want to enter in maually?");
+		System.out.println("Do you want to run a file?");
 		String answer = sc.next();
-		
+
 		if (answer.toLowerCase().equals("yes")){
 			manuallyInitCube();
 		}else{
 			initCube();
 		}
-		
+
 		calculateNext();
-		
-		//calculates answers and prints them
+
+		//System.out.println("\nDo you want to run test proj?");
 		int totalMovesPath1 = findPath1();
 		int totalMovesPath2 = findPath2();
 		boolean num1IsLower = (totalMovesPath1 < totalMovesPath2) ? true : false;
-		if (num1IsLower){
-			printAnswers(totalMovesPath1, movesPerBee1, totalMovesPath2);
-		}else{
-			printAnswers(totalMovesPath2, movesPerBee2, totalMovesPath1);
-		}
+		
+		//String knap = sc.next().toLowerCase();
+		//if(knap.equals("yes")){
+			int lesserNumber = (totalMovesPath1 < totalMovesPath2) ? totalMovesPath1 : totalMovesPath2;
+
+			int f = KnapsackProblem(findPathForKnapsack(), lesserNumber);
+			if (f == lesserNumber){
+				if (num1IsLower){
+					printAnswers(f, movesPerBee1, "There is no difference between the other");
+				}else{
+					printAnswers(f, movesPerBee2, "There is no difference between the other");
+				}
+			}else{
+				printAnswers(f, movesPerBeeKnapsack, "This is " + (lesserNumber - f) + " moves shorter than floodfill");
+			}
+		//}else{
+//			if (num1IsLower){
+//				printAnswers(totalMovesPath1, movesPerBee1, "");
+//			}else{
+//				printAnswers(totalMovesPath2, movesPerBee2, "");
+//			}
+//
+//		}
 	}
-	
-	public static void printAnswers(int totalMoves, int[] movesPerBee, int alternatePath){
+
+	public static void printAnswers(int totalMoves, int[] movesPerBee, String message){
 		System.out.print("\n");
 		for (int i = 0; i < 15; i++){
 			System.out.println("Bee #" + (i + 1) + " moved " + movesPerBee[i]);
 		}
 		System.out.println("The total amount of moves were " + totalMoves);
-		System.out.println("\nAlternate Paths : " + alternatePath);
+		System.out.println(message);
 
 	}
-		
-	
-	
+
+
+
 	//MARK: - Path Finding
 
 	static void allToNull(){
@@ -68,17 +87,119 @@ class Driver{
 			}
 		}
 	}
-	
+
+	static int[][] findPathForKnapsack(){
+		allToNull();
+
+		int[][] totalDistances = new int[15][15];
+
+		//loop per hive Number
+		for (int i = 0; i < 15; i ++){
+
+			List<ArrayList<int[]>> openList = new ArrayList<ArrayList<int[]>>();
+			int beeCount = 0;
+
+			//adds hive point to openList
+			int[] startPoint = {hive[i][0], hive[i][1], hive[i][2]};
+			ArrayList<int[]> thisSomething = new ArrayList<int[]>();
+			thisSomething.add(startPoint);
+			openList.add(thisSomething);
+
+			int count = 1;
+
+			//Loop through the layers of count
+			while (beeCount < 15){
+
+				ArrayList<int[]> thisGroup = openList.get(count - 1);
+
+				//loopes through nodes in the layer
+				for (int j = 0; j < thisGroup.size(); j++){
+
+					int x = thisGroup.get(j)[0];
+					int y = thisGroup.get(j)[1];
+					int z = thisGroup.get(j)[2];
+
+					Node thisNode = cube[x][y][z];
+
+					//checks if is bee
+					if (thisNode.isBee){
+						totalDistances[i][thisNode.beeNumber] = count;
+						cube[x][y][z].distance[i] = count;
+						beeCount += 1;
+					}
+
+					//adds all nodes next to this node that have not been added already
+					for (int f = 0; f < 26; f ++){
+						if(thisNode.next[f] != null){
+							int[] thisNext = {thisNode.next[f].X, thisNode.next[f].Y, thisNode.next[f].Z};
+							if (cube[thisNext[0]][thisNext[1]][thisNext[2]].distance[i] == null){
+								try{
+									openList.get(count).add(thisNext);
+									cube[thisNext[0]][thisNext[1]][thisNext[2]].distance[i] = count; 
+								}catch(Exception e){
+									cube[thisNext[0]][thisNext[1]][thisNext[2]].distance[i] = count;
+									ArrayList<int[]> thisArray = new ArrayList<int[]>();
+									thisArray.add(thisNext);
+									openList.add(thisArray);
+								}
+							}
+						}
+					}
+				}
+				count++;
+			}
+		}
+
+		return totalDistances;
+
+	}
+
+	static int KnapsackProblem(int[][] moves, int n){
+
+		int stdNum = n;
+
+		int[] indexes = {14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+
+		for (int i = 0; i < 15; i++){
+			for (int j = 0; j < 15; j++){
+
+				int thisNumSum = 0;
+				for (int k = 0; k < 15; k++){
+					int x = bees[k][0];
+					int y = bees[k][1];
+					int z = bees[k][2];
+					thisNumSum += cube[x][y][z].distance[k];
+				}
+
+				if(thisNumSum < n){
+					stdNum = thisNumSum;
+					for (int k = 0; k < 15; k++){
+						int x = bees[k][0];
+						int y = bees[k][1];
+						int z = bees[k][2];
+						movesPerBeeKnapsack[k] = cube[x][y][z].distance[k];
+					}
+				}
+				try{
+					int thisNow = indexes[j];
+					indexes[j] = indexes[j + 1];
+					indexes[j + 1] = thisNow;
+				}catch(Exception e){}
+			}
+		}
+		return stdNum;
+	}
+
 	static int findPath1(){
 		allToNull();
-		
+
 		int totalMoves = 0;
 		//loop per hive Number
 		for (int i = 0; i < 15; i ++){
-			
+
 			List<ArrayList<int[]>> openList = new ArrayList<ArrayList<int[]>>();
 			boolean noBeeFound = true;
-			
+
 			//adds hive point to openList
 			int[] startPoint = {hive[i][0], hive[i][1], hive[i][2]};
 			ArrayList<int[]> thisSomething = new ArrayList<int[]>();
@@ -92,10 +213,10 @@ class Driver{
 				while (noBeeFound){
 
 					ArrayList<int[]> thisGroup = openList.get(count - 1);
-					
+
 					//loopes through nodes in the layer
 					for (int j = 0; j < thisGroup.size(); j++){
-						
+
 						int x = thisGroup.get(j)[0];
 						int y = thisGroup.get(j)[1];
 						int z = thisGroup.get(j)[2];
@@ -133,16 +254,16 @@ class Driver{
 					count++;
 				}
 		}
-		
+
 		return totalMoves;
 	}
-	
+
 	static int findPath2(){
 		allToNull();
-		
+
 		int totalMoves = 0;
 		for (int i = 14; i >= 0; i--){
-			
+
 			List<ArrayList<int[]>> openList = new ArrayList<ArrayList<int[]>>();
 
 			boolean noBeeFound = true;
@@ -199,11 +320,12 @@ class Driver{
 		return totalMoves;
 	}
 
-	
-	
+
+
+
+
 	//MARK: - Init Cube
-	
-	
+
 	public static void makeNodeArr(){
 		//Makes each a new Node
 		for (int i = 0; i < dimention; i ++){
@@ -214,14 +336,14 @@ class Driver{
 			}
 		}
 	}
-	
+
 	public static void manuallyInitCube(){
 		try {
-			
+
 			System.out.println("Which file do you choose (1, 2, or 3)?");
-			
+
 			String fileString;
-			
+
 			switch(sc.next()){
 			case "1": fileString = "beesetup1.txt"; break;
 			case "2": fileString = "beesetup2.txt"; break;
@@ -231,15 +353,15 @@ class Driver{
 				System.out.println("\nNo recognizable answer. Defaults to 1.\n"); 
 				break;
 			}
-			
+
 			File thisFile = new File(fileString);
 			Scanner fileSc = new Scanner(thisFile);
 			dimention = Integer.parseInt(fileSc.next().split(",")[0]);
 			cube = new Node[dimention][dimention][dimention];
 			volume = dimention * dimention * dimention;
-			
+
 			makeNodeArr();
-			
+
 			//Hives
 			for (int i = 0; i < 15; i++){
 				String[] hiveCoord = fileSc.next().split(",");
@@ -249,7 +371,7 @@ class Driver{
 				cube[x][y][z].makeHive(i);
 				hive[i] = new int[] {x, y, z};
 			}
-			
+
 			//Bees
 			for (int i = 0; i < 15; i++){
 				String[] beeCord = fileSc.next().split(",");
@@ -259,10 +381,10 @@ class Driver{
 				cube[x][y][z].makeBee(i);
 				bees[i] = new int[] {x, y, z};
 			}
-			
+
 			int numberOfSolids = Integer.parseInt(fileSc.next());
 			System.out.println("\nThere are " + numberOfSolids + " solid trash blocks");
-			
+
 			//Solids
 			for (int i = 0; i < numberOfSolids; i++){
 				String[] solidCord = fileSc.next().split(",");
@@ -271,25 +393,23 @@ class Driver{
 				int z = Integer.parseInt(solidCord[2]);
 				cube[x][y][z].makeSolid();
 			}
-			
-			
+
+
 		} catch (FileNotFoundException e) {
 			System.out.println("\nFile could not be found Check Code try again");
 		}
-		
-		
+
+
 	}
-	
-	
-	
+
 	public static void initCube(){
 		System.out.println("Please enter a number from 25 - 35");
 		dimention = sc.nextInt();
 		cube = new Node[dimention][dimention][dimention];
 		volume = dimention * dimention * dimention;
-		
+
 		makeNodeArr();
-		
+
 		//randomly makes a hive anywhere
 		while(true){
 			Random rn = new Random();
@@ -358,7 +478,7 @@ class Driver{
 
 
 	}
-	
+
 	public static void calculateNext(){
 		for (int i = 0; i < dimention; i ++){
 			for (int j = 0; j < dimention; j ++){
@@ -368,16 +488,16 @@ class Driver{
 			}
 		}
 	}
-	
+
 	public static boolean existsinCube(int a, int b, int c){
-	    try{
-	      Node d = cube[a][b][c];
-	      return true;
-	    } catch(ArrayIndexOutOfBoundsException e){
-	      return false;
-	    }
+		try{
+			Node d = cube[a][b][c];
+			return true;
+		} catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
 	}
-		
+
 }
 
 
