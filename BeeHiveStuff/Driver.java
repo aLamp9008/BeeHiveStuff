@@ -1,5 +1,6 @@
 package BeeHiveStuff;
 import BeeHiveStuff.Node;
+import tinshoes.input.SafeScanner;
 //import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayDeque;
@@ -8,12 +9,12 @@ import java.util.Random;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.File;
 /* Yes, I know there are a lot of spelling mistakes.
  * Don't blame me.
  * -David
  */
 class Driver{
-	
 	public Scanner sc;// = new Scanner(System.in);
 	public int dimention;
 	
@@ -28,41 +29,87 @@ class Driver{
 		sc = new Scanner(System.in);
 	}
 	public static void main(String[] args){
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Please enter a number from 25 - 35");
-		int dimention = sc.nextInt();
-		Driver d = new Driver(dimention);
-		
-		d.initCube();	
-		System.out.println("Starting...");
-		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
-		//test = floodFill(cube[0][0][0], test, -1);
-		//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
-		//System.out.println("Done!");
-		//System.out.println(test.get(d.cube[0][0][3]));
-		//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
-		for (int j = 0; j < 15; j++) {
-			HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
-			Integer closestHive = null, closestDistance = null;
-			for (int i = 0; i < 15; i++) {
-				Integer currDist = h.get(d.hives[i]);
-				if (currDist != null) {
-					if (closestHive == null || closestDistance == null) {
-						closestHive = i;
-						closestDistance = currDist;
-					} else if (currDist < closestDistance) { //Only in a different if statement because null < int throws an error
-						closestHive = i;
-						closestDistance = currDist;
+		Scanner usc = new Scanner(System.in);
+		SafeScanner sc = new SafeScanner(usc);
+		if (sc.yn("Would you like to input from a file?", "That is not valid input.")) {
+			System.out.println("What is the name of the file?");
+			String fileName = usc.next();
+			File file = new File(fileName);
+			if (!file.exists() || file.isDirectory() || !file.canRead()) {
+				System.out.println("That file doesn't exist/is a directory/is unreadable.  Exiting...");
+				return;
+			}
+			Scanner fileReader;
+			try {
+				fileReader = new Scanner(file);
+			} catch (Exception e) {
+				System.out.println("Exception in reading file: " + e.getMessage());
+				return;
+			}
+			System.out.println("File Header: " + fileReader.nextLine());
+			int dimention = Integer.parseInt(fileReader.nextLine());
+			Driver d = new Driver(dimention);
+			d.initCubeFromInput(fileReader);
+			System.out.println("Starting...");
+			for (int j = 0; j < 15; j++) {
+				HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
+				Integer closestHive = null, closestDistance = null;
+				for (int i = 0; i < 15; i++) {
+					Integer currDist = h.get(d.hives[i]);
+					if (currDist != null) {
+						if (closestHive == null || closestDistance == null) {
+							closestHive = i;
+							closestDistance = currDist;
+						} else if (currDist < closestDistance) { //Only in a different if statement because null < int throws an error
+							closestHive = i;
+							closestDistance = currDist;
+						}
 					}
 				}
+				System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
+				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
+				//d.bees[j] = d.hives[closestHive];
+				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isSolid = true;
+				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
 			}
-			System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
-			d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
-			d.bees[j] = d.hives[closestHive];
-			d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isSolid = true;
-			d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
+			System.out.println("Done!");
+
+		} else {
+			System.out.println("Please enter a number from 25 - 35");
+			int dimention = usc.nextInt();
+			Driver d = new Driver(dimention);
+			
+			d.initCube();	
+			System.out.println("Starting...");
+			//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
+			//test = floodFill(cube[0][0][0], test, -1);
+			//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
+			//System.out.println("Done!");
+			//System.out.println(test.get(d.cube[0][0][3]));
+			//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
+			for (int j = 0; j < 15; j++) {
+				HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
+				Integer closestHive = null, closestDistance = null;
+				for (int i = 0; i < 15; i++) {
+					Integer currDist = h.get(d.hives[i]);
+					if (currDist != null) {
+						if (closestHive == null || closestDistance == null) {
+							closestHive = i;
+							closestDistance = currDist;
+						} else if (currDist < closestDistance) { //Only in a different if statement because null < int throws an error
+							closestHive = i;
+							closestDistance = currDist;
+						}
+					}
+				}
+				System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
+				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
+				//d.bees[j] = d.hives[closestHive];
+				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isSolid = true;
+				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
+			}
+			System.out.println("Done!");
 		}
-		System.out.println("Done!");
 		//Node f = test.get(d.cube[0][0][2]);
 		//System.out.println(d.cube[0][0][0].getNextTo().length);
 		/*for (Node j : d.cube[0][0][0].getNextTo()) {
@@ -152,13 +199,7 @@ class Driver{
 	
 	
 	
-	
-	
-	//MARK: - Init Cube
-	
-	//creates the blocks in a cube as solid, hive and bee
-	public void initCube(){
-		//Makes each a new Node
+	public void fillCube() {
 		int count = 0;
 		for (int i = 0; i < dimention; i ++){
 			for (int j = 0; j < dimention; j ++){
@@ -168,6 +209,46 @@ class Driver{
 				}
 			}
 		}
+	}
+	public void initCubeFromInput(Scanner in) {
+		fillCube();
+		//Hives
+		for (int i = 0; i < 15; i++) {
+			String[] curr = in.nextLine().split(",");
+			int[] coords = new int[3];
+			for (int x = 0; x < 3; x++) {
+				coords[x] = Integer.parseInt(curr[x]);
+			}
+			cube[coords[0]][coords[1]][coords[2]].makeHive(i);
+			hives[i] = cube[coords[0]][coords[1]][coords[2]];
+		}
+		//Bees
+		for (int i = 0; i < 15; i++) {
+			String[] curr = in.nextLine().split(",");
+			int[] coords = new int[3];
+			for (int x = 0; x < 3; x++) {
+				coords[x] = Integer.parseInt(curr[x]);
+			}
+			cube[coords[0]][coords[1]][coords[2]].makeBee(i);
+			bees[i] = cube[coords[0]][coords[1]][coords[2]];
+		}
+		int numOfSolids = Integer.parseInt(in.nextLine());
+		System.out.println("There are " + numOfSolids + " solid blocks.");
+		for (int i = 0; i < numOfSolids; i++) {
+			String[] curr = in.nextLine().split(",");
+			int[] coords = new int[3];
+			for (int x = 0; x < 3; x++) {
+				coords[x] = Integer.parseInt(curr[x]);
+			}
+			cube[coords[0]][coords[1]][coords[2]].makeSolid();
+		}
+	}
+	//MARK: - Init Cube
+	
+	//creates the blocks in a cube as solid, hive and bee
+	public void initCube(){
+		//Makes each a new Node
+		fillCube();
 		
 		// sets the hive at 2,2,2 - 2,2,17
 //		for (int i = 0; i < 15; i++){
