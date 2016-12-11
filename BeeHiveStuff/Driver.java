@@ -47,10 +47,11 @@ class Driver{
 				return;
 			}
 			System.out.println("File Header: " + fileReader.nextLine());
-			int dimention = Integer.parseInt(fileReader.nextLine());
+			int dimention = Integer.parseInt(fileReader.nextLine().split(",")[0]);
 			Driver d = new Driver(dimention);
 			d.initCubeFromInput(fileReader);
 			System.out.println("Starting...");
+			int total = 0;
 			for (int j = 0; j < 15; j++) {
 				HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
 				Integer closestHive = null, closestDistance = null;
@@ -66,6 +67,7 @@ class Driver{
 						}
 					}
 				}
+				total += closestDistance == null ? 0 : closestDistance;
 				System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
 				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
 				//d.bees[j] = d.hives[closestHive];
@@ -73,6 +75,7 @@ class Driver{
 				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
 			}
 			System.out.println("Done!");
+			System.out.println("Total moves: " + total);
 
 		} else {
 			System.out.println("Please enter a number from 25 - 35");
@@ -87,6 +90,7 @@ class Driver{
 			//System.out.println("Done!");
 			//System.out.println(test.get(d.cube[0][0][3]));
 			//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
+			int total = 0;
 			for (int j = 0; j < 15; j++) {
 				HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
 				Integer closestHive = null, closestDistance = null;
@@ -102,6 +106,7 @@ class Driver{
 						}
 					}
 				}
+				total += closestDistance == null ? 0 : closestDistance;
 				System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
 				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
 				//d.bees[j] = d.hives[closestHive];
@@ -109,6 +114,7 @@ class Driver{
 				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
 			}
 			System.out.println("Done!");
+			System.out.println("Total moves: " + total);
 		}
 		//Node f = test.get(d.cube[0][0][2]);
 		//System.out.println(d.cube[0][0][0].getNextTo().length);
