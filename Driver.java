@@ -37,16 +37,34 @@ class Driver{
 		System.out.println("Starting...");
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
 		//test = floodFill(cube[0][0][0], test, -1);
-		HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
-		System.out.println("Done!");
-		System.out.println(test.get(d.cube[0][0][3]));
+		//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
+		//System.out.println("Done!");
+		//System.out.println(test.get(d.cube[0][0][3]));
 		//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
-
-		for (Node n : d.bees) {
-
+		for (int j = 0; j < 15; j++) {
+			HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
+			Integer closestHive = null, closestDistance = null;
+			for (int i = 0; i < 15; i++) {
+				Integer currDist = h.get(d.hives[i]);
+				if (currDist != null) {
+					if (closestHive == null || closestDistance == null) {
+						closestHive = i;
+						closestDistance = currDist;
+					} else if (currDist < closestDistance) { //Only in a different if statement because null < int throws an error
+						closestHive = i;
+						closestDistance = currDist;
+					}
+				}
+			}
+			System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
+			d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
+			d.bees[j] = d.hives[closestHive];
+			d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isSolid = true;
+			d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
 		}
+		System.out.println("Done!");
 		//Node f = test.get(d.cube[0][0][2]);
-		System.out.println(d.cube[0][0][0].getNextTo().length);
+		//System.out.println(d.cube[0][0][0].getNextTo().length);
 		/*for (Node j : d.cube[0][0][0].getNextTo()) {
 			if (j != null) {
 				System.out.println("(" + j.X + ",\t" + j.Y + ",\t" + j.Z + ")");
@@ -56,7 +74,7 @@ class Driver{
 			System.out.println("(" + f.X + ",\t" + f.Y + ",\t" + f.Z + ") ->");
 			f = test.pointed.get(f);
 		} while (f != d.cube[0][0][0]);*/
-		System.out.println(d.cube[0][0][3].isSolid);
+		//System.out.println(d.cube[0][0][3].isSolid);
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}

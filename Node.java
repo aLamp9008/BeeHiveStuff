@@ -174,7 +174,7 @@ public class Node{
 			if (!isHive){
 				isBee = true;
 				beeNumber = beeNum;
-				System.out.println("Bee #" + beeNumber + " (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
+				System.out.println("Bee #" + (beeNumber+1) + " (x, y, z) : (" + X + ", " + Y + ", " + Z + ")");
 				return true;
 			}//else{
 			//finished = true;
