@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.io.File;
 /* Yes, I know there are a lot of spelling mistakes.
@@ -51,13 +52,55 @@ class Driver{
 			Driver d = new Driver(dimention);
 			d.initCubeFromInput(fileReader);
 			System.out.println("Starting...");
-			int total = 0;
+			//int total = 0;
+			Node[] beePriority = new Node[15];
+			int[] beePriorityVals = new int[15];
+			List<HashMap<Node, Integer>> beeDists = new ArrayList<HashMap<Node, Integer>>();
+			System.arraycopy(d.bees, 0, beePriority, 0, 15);
+			Node[] beeHivePair = new Node[15];
+			for (int i = 0; i < 15; i++) {
+				HashMap<Node, Integer> hm = d.floodFill(d.bees[i]);
+				beeDists.add(hm);
+				Integer furthestHiveLen = null, closestHiveLen = null;
+				for (Node h : d.hives) {
+					Integer curr = hm.get(h);
+					if (furthestHiveLen == null) {
+						furthestHiveLen = curr;
+					} else if (furthestHiveLen < curr) {
+						furthestHiveLen = curr;
+					}
+					if (closestHiveLen == null) {
+						closestHiveLen = hm.get(h);
+					} else if (closestHiveLen > curr) {
+						closestHiveLen = curr;
+					}
+				}
+				beePriorityVals[i] = furthestHiveLen == null || closestHiveLen == null ? 0 : furthestHiveLen - closestHiveLen;
+			}
+			boolean flag = true;
+			while (flag) {
+				flag = false;
+				for (int j = 0; j < 14; j++) {
+					if (beePriorityVals[j] < beePriorityVals[j + 1]) {
+						int temp = beePriorityVals[j];
+						beePriorityVals[j] = beePriorityVals[j + 1];
+						beePriorityVals[j + 1] = temp;
+						Node temp2 = beePriority[j];
+						beePriority[j] = beePriority[j + 1];
+						beePriority[j + 1] = temp2;
+						HashMap<Node, Integer> temp3 = beeDists.get(j);
+						beeDists.set(j, beeDists.get(j+1));
+						beeDists.set(j+1, temp3);
+						flag = true;
+					}
+				}
+			}
 			for (int j = 0; j < 15; j++) {
-				HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
+				HashMap<Node, Integer> h = beeDists.get(j);
 				Integer closestHive = null, closestDistance = null;
 				for (int i = 0; i < 15; i++) {
 					Integer currDist = h.get(d.hives[i]);
-					if (currDist != null) {
+					if (currDist != null && !d.hives[i].isBee) {
 						if (closestHive == null || closestDistance == null) {
 							closestHive = i;
 							closestDistance = currDist;
@@ -67,12 +110,20 @@ class Driver{
 						}
 					}
 				}
-				total += closestDistance == null ? 0 : closestDistance;
-				System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
+				//total += closestDistance == null ? 0 : closestDistance;
+				d.hives[closestHive].numberOfMoves = closestDistance;
+				beeHivePair[beePriority[j].beeNumber] = closestHive == null ? null : d.hives[closestHive];
+				//System.out.println("Bee #" + (beePriority[j].beeNumber + 1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
 				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
 				//d.bees[j] = d.hives[closestHive];
+				//System.out.println(d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z]);
 				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isSolid = true;
 				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
+			}
+			int total = 0;
+			for (int i = 0; i < 15; i++) {
+				System.out.println("Bee #" + (i + 1) + (beeHivePair[i] == null ? " is unreachable." : " reached Hive #" + (beeHivePair[i].hiveNumber + 1) + " in " + (beeHivePair[i].numberOfMoves + 1) + " moves."));
+				total += beeHivePair[i].numberOfMoves;
 			}
 			System.out.println("Done!");
 			System.out.println("Total moves: " + total);

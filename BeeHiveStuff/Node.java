@@ -8,9 +8,9 @@ public class Node{
 	public boolean isHive;
 	public boolean isBee;
 	private boolean finished;
-	private int beeNumber;
-	private int numberOfMoves;
-	private int hiveNumber;
+	public int beeNumber;
+	public int numberOfMoves;
+	public int hiveNumber;
 	//public HashMap distances;
 	private int[] distance = new int[15];
 	private Node[][][] cube;
@@ -196,6 +196,9 @@ public class Node{
 		}
 		return false;
 	}
+    public String toString() {
+        return "(" + X + ", " + Y + ", " + Z + ") isSolid: " + isSolid + ". isBee: " + isBee + ". isHive: " + isHive + ".";
+    }
 	//Blame Alden for this monstrosity.
 	/*public String get(keys key){
 		switch (key){
