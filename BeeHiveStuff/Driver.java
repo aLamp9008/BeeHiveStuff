@@ -52,6 +52,39 @@ class Driver{
 			Driver d = new Driver(dimention);
 			d.initCubeFromInput(fileReader);
 			System.out.println("Starting...");
+			run(d);
+
+		} else {
+			System.out.println("Please enter a number from 25 - 35");
+			int dimention = usc.nextInt();
+			Driver d = new Driver(dimention);
+			
+			d.initCube();	
+			System.out.println("Starting...");
+			run(d);
+		}
+		//Node f = test.get(d.cube[0][0][2]);
+		//System.out.println(d.cube[0][0][0].getNextTo().length);
+		/*for (Node j : d.cube[0][0][0].getNextTo()) {
+			if (j != null) {
+				System.out.println("(" + j.X + ",\t" + j.Y + ",\t" + j.Z + ")");
+			}
+		}
+		do {
+			System.out.println("(" + f.X + ",\t" + f.Y + ",\t" + f.Z + ") ->");
+			f = test.pointed.get(f);
+		} while (f != d.cube[0][0][0]);*/
+		//System.out.println(d.cube[0][0][3].isSolid);
+		//System.out.println(test.get(cube[0][0][1]));
+//		System.out.println("Please type \"yes\"" to continue with calculation");
+	}
+	public static void run(Driver d) {
+		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
+			//test = floodFill(cube[0][0][0], test, -1);
+			//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
+			//System.out.println("Done!");
+			//System.out.println(test.get(d.cube[0][0][3]));
+			//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
 			//int total = 0;
 			Node[] beePriority = new Node[15];
 			int[] beePriorityVals = new int[15];
@@ -127,62 +160,28 @@ class Driver{
 			}
 			System.out.println("Done!");
 			System.out.println("Total moves: " + total);
-
-		} else {
-			System.out.println("Please enter a number from 25 - 35");
-			int dimention = usc.nextInt();
-			Driver d = new Driver(dimention);
-			
-			d.initCube();	
-			System.out.println("Starting...");
-			//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
-			//test = floodFill(cube[0][0][0], test, -1);
-			//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
-			//System.out.println("Done!");
-			//System.out.println(test.get(d.cube[0][0][3]));
-			//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
-			int total = 0;
-			for (int j = 0; j < 15; j++) {
-				HashMap<Node, Integer> h = d.floodFill(d.bees[j]);
-				Integer closestHive = null, closestDistance = null;
-				for (int i = 0; i < 15; i++) {
-					Integer currDist = h.get(d.hives[i]);
-					if (currDist != null) {
-						if (closestHive == null || closestDistance == null) {
-							closestHive = i;
-							closestDistance = currDist;
-						} else if (currDist < closestDistance) { //Only in a different if statement because null < int throws an error
-							closestHive = i;
-							closestDistance = currDist;
-						}
+	}
+	public static ArrayList<Node> reconstructPath(HashMap<Node, Integer> distances, Node dest) {
+		//Set<Map.Entry<Node, Integer>> entries = distances.entrySet();
+		ArrayList<Node> path = new ArrayList<Node>();
+		//Node curr = dest;
+		path.add(0, dest);
+		int dist = distances.get(dest);
+		while (dist > 0) {
+			dest.calculateNextTo();
+			for (Node n : path.get(0).getNextTo()) {
+				if (n != null && distances.get(n) != null) {
+					if (distances.get(n) == dist - 1) {
+						dist--;
+						//curr = n;
+						path.add(0, n);
 					}
 				}
-				total += closestDistance == null ? 0 : closestDistance;
-				System.out.println("Bee #" + (j+1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
-				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
-				//d.bees[j] = d.hives[closestHive];
-				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isSolid = true;
-				d.cube[d.hives[closestHive].X][d.hives[closestHive].Y][d.hives[closestHive].Z].isBee = true;
-			}
-			System.out.println("Done!");
-			System.out.println("Total moves: " + total);
-		}
-		//Node f = test.get(d.cube[0][0][2]);
-		//System.out.println(d.cube[0][0][0].getNextTo().length);
-		/*for (Node j : d.cube[0][0][0].getNextTo()) {
-			if (j != null) {
-				System.out.println("(" + j.X + ",\t" + j.Y + ",\t" + j.Z + ")");
 			}
 		}
-		do {
-			System.out.println("(" + f.X + ",\t" + f.Y + ",\t" + f.Z + ") ->");
-			f = test.pointed.get(f);
-		} while (f != d.cube[0][0][0]);*/
-		//System.out.println(d.cube[0][0][3].isSolid);
-		//System.out.println(test.get(cube[0][0][1]));
-//		System.out.println("Please type \"yes\"" to continue with calculation");
+		return path;
 	}
-		
+
 	//MARK: - Path Finding
 
 	public HashMap<Node, Integer> floodFill(Node n) {
