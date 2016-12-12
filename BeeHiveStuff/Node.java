@@ -9,7 +9,7 @@ public class Node{
 	public boolean isBee;
 	private boolean finished;
 	public int beeNumber;
-	public int numberOfMoves;
+	public Integer numberOfMoves;
 	public int hiveNumber;
 	//public HashMap distances;
 	private int[] distance = new int[15];

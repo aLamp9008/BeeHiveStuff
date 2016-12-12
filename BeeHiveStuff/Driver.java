@@ -122,7 +122,7 @@ class Driver{
 			}
 			int total = 0;
 			for (int i = 0; i < 15; i++) {
-				System.out.println("Bee #" + (i + 1) + (beeHivePair[i] == null ? " is unreachable." : " reached Hive #" + (beeHivePair[i].hiveNumber + 1) + " in " + (beeHivePair[i].numberOfMoves + 1) + " moves."));
+				System.out.println("Bee #" + (i + 1) + (beeHivePair[i] == null ? " is unreachable." : " reached Hive #" + (beeHivePair[i].hiveNumber + 1) + " in " + beeHivePair[i].numberOfMoves + " moves."));
 				total += beeHivePair[i].numberOfMoves;
 			}
 			System.out.println("Done!");
