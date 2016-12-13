@@ -78,7 +78,7 @@ class Driver{
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
-	public static void run(Driver d) {
+	public static List<HashMap<Node, Integer>> run(Driver d) {
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
 			//test = floodFill(cube[0][0][0], test, -1);
 			//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
@@ -86,10 +86,14 @@ class Driver{
 			//System.out.println(test.get(d.cube[0][0][3]));
 			//ArrayList<Node> beeList = new ArrayList<Node>(Arrays.asList(d.bees));
 			//int total = 0;
-			Node[] beePriority = new Node[15];
+			//Node[] beePriority = new Node[15];
 			int[] beePriorityVals = new int[15];
 			List<HashMap<Node, Integer>> beeDists = new ArrayList<HashMap<Node, Integer>>();
-			System.arraycopy(d.bees, 0, beePriority, 0, 15);
+			int[] beePriority = new int[15];
+			for (int i = 0; i < 15; i++) {
+				beePriority[i] = i;
+			}
+			//System.arraycopy(d.bees, 0, beePriority, 0, 15);
 			Node[] beeHivePair = new Node[15];
 			for (int i = 0; i < 15; i++) {
 				HashMap<Node, Integer> hm = d.floodFill(d.bees[i]);
@@ -118,18 +122,18 @@ class Driver{
 						int temp = beePriorityVals[j];
 						beePriorityVals[j] = beePriorityVals[j + 1];
 						beePriorityVals[j + 1] = temp;
-						Node temp2 = beePriority[j];
+						int temp2 = beePriority[j];
 						beePriority[j] = beePriority[j + 1];
 						beePriority[j + 1] = temp2;
-						HashMap<Node, Integer> temp3 = beeDists.get(j);
+						/*HashMap<Node, Integer> temp3 = beeDists.get(j);
 						beeDists.set(j, beeDists.get(j+1));
-						beeDists.set(j+1, temp3);
+						beeDists.set(j+1, temp3);*/
 						flag = true;
 					}
 				}
 			}
 			for (int j = 0; j < 15; j++) {
-				HashMap<Node, Integer> h = beeDists.get(j);
+				HashMap<Node, Integer> h = beeDists.get(beePriority[j]);
 				Integer closestHive = null, closestDistance = null;
 				for (int i = 0; i < 15; i++) {
 					Integer currDist = h.get(d.hives[i]);
@@ -145,7 +149,7 @@ class Driver{
 				}
 				//total += closestDistance == null ? 0 : closestDistance;
 				d.hives[closestHive].numberOfMoves = closestDistance;
-				beeHivePair[beePriority[j].beeNumber] = closestHive == null ? null : d.hives[closestHive];
+				beeHivePair[d.bees[beePriority[j]].beeNumber] = closestHive == null ? null : d.hives[closestHive];
 				//System.out.println("Bee #" + (beePriority[j].beeNumber + 1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
 				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
 				//d.bees[j] = d.hives[closestHive];
@@ -160,6 +164,7 @@ class Driver{
 			}
 			System.out.println("Done!");
 			System.out.println("Total moves: " + total);
+			return beeDists;
 	}
 	public static ArrayList<Node> reconstructPath(HashMap<Node, Integer> distances, Node dest) {
 		//Set<Map.Entry<Node, Integer>> entries = distances.entrySet();
