@@ -1,10 +1,11 @@
 package BeeHiveStuff;
 import java.util.HashMap;
+import java.util.List;
 public class Result {
-	public HashMap<Node, Integer> paths;
-	public HashMap<Node, Node> pointed;
-	public Result(HashMap<Node, Integer> paths, HashMap<Node, Node> pointed) {
+	public List<HashMap<Node, Integer>> paths;
+	public Node[] destinations;
+	public Result(List<HashMap<Node, Integer>> paths, Node[] pointed) {
 		this.paths = paths;
-		this.pointed = pointed;
+		this.destinations = destinations;
 	}
 }

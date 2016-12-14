@@ -52,8 +52,19 @@ class Driver{
 			Driver d = new Driver(dimention);
 			d.initCubeFromInput(fileReader);
 			System.out.println("Starting...");
-			run(d);
-
+			//run(d);
+			Result h = run(d);
+			while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
+				int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
+				if (currBee > 15 || currBee < 1) {
+					System.out.println("Enter a number from 1-15.");
+					continue;
+				}
+				System.out.println("Path for Bee #" + currBee);
+				for (Node n : reconstructPath(h.paths.get(currBee - 1), h.destinations[currBee - 1])) {
+					System.out.println(n);
+				}
+			}
 		} else {
 			System.out.println("Please enter a number from 25 - 35");
 			int dimention = usc.nextInt();
@@ -61,7 +72,18 @@ class Driver{
 			
 			d.initCube();	
 			System.out.println("Starting...");
-			run(d);
+			Result h = run(d);
+			while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
+				int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
+				if (currBee > 15 || currBee < 1) {
+					System.out.println("Enter a number from 1-15.");
+					continue;
+				}
+				System.out.println("Path for Bee #" + currBee);
+				for (Node n : reconstructPath(h.paths.get(currBee - 1), h.destinations[currBee - 1])) {
+					System.out.println(n);
+				}
+			}
 		}
 		//Node f = test.get(d.cube[0][0][2]);
 		//System.out.println(d.cube[0][0][0].getNextTo().length);
@@ -78,7 +100,7 @@ class Driver{
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
-	public static List<HashMap<Node, Integer>> run(Driver d) {
+	public static Result run(Driver d) {
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
 			//test = floodFill(cube[0][0][0], test, -1);
 			//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
@@ -164,10 +186,13 @@ class Driver{
 			}
 			System.out.println("Done!");
 			System.out.println("Total moves: " + total);
-			return beeDists;
+			return new Result(beeDists, beeHivePair);
 	}
 	public static ArrayList<Node> reconstructPath(HashMap<Node, Integer> distances, Node dest) {
 		//Set<Map.Entry<Node, Integer>> entries = distances.entrySet();
+		if (distances == null) {
+			System.out.println("crap");
+		}
 		ArrayList<Node> path = new ArrayList<Node>();
 		//Node curr = dest;
 		path.add(0, dest);
