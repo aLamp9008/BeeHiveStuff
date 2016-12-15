@@ -94,7 +94,7 @@ class Driver{
 				}
 				if (sc.yn("Would you like to add a header to the file?", "That is not yes or no.")) {
 					System.out.println("What header would you like the file to have?");
-					fileW.println(usc.nextLine());
+					fileW.println(usc.next());
 				}
 				fileW.println(dimention + "," + dimention + "," + dimention);
 				for (Node n : d.hives) {
@@ -107,7 +107,7 @@ class Driver{
 				for (Node[][] naa : d.cube) {
 					for (Node[] na : naa) {
 						for (Node n : na) {
-							if (n.isSolid)
+							if (n.isSolid && !n.isHive)
 								solids.add(new int[] {n.X, n.Y, n.Z});
 						}
 					}
@@ -443,7 +443,7 @@ class Driver{
 		//sets 0.3 of the blocks into solid
 		int numOfSolids = (int) (0.3 * volume);
 		System.out.println("There are " + numOfSolids + " solid trash blocks");
-		for (int i = 0; i <= numOfSolids; i++){
+		for (int i = 0; i < numOfSolids; i++){
 			while(true){
 				Random rn = new Random();
 				int x = rn.nextInt(dimention);
