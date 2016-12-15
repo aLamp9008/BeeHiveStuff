@@ -54,19 +54,7 @@ class Driver{
 			System.out.println("Starting...");
 			//pathFind(d);
 			Result h = pathFind(d);
-			while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
-				int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
-				if (currBee > 15 || currBee < 1) {
-					System.out.println("Enter a number from 1-15.");
-					continue;
-				}
-				System.out.println("Path for Bee #" + currBee);
-				//System.out.println(h.paths.get(currBee - 1) == null);
-				//System.out.println(Arrays.toString(h.destinations));
-				for (Node n : reconstructPath(h.paths.get(currBee - 1), h.destinations[currBee - 1])) {
-					System.out.println(n);
-				}
-			}
+			queryUserForPaths(h, sc);
 		} else {
 			System.out.println("Please enter a number from 25 - 35");
 			int dimention = usc.nextInt();
@@ -75,16 +63,26 @@ class Driver{
 			d.initCube();	
 			System.out.println("Starting...");
 			Result h = pathFind(d);
-			while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
-				int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
-				if (currBee > 15 || currBee < 1) {
-					System.out.println("Enter a number from 1-15.");
-					continue;
+			queryUserForPaths(h, sc);
+			if (sc.yn("Would you like to export the cube that was generated?", "That is not a valid answer.")) {
+				System.out.println("Where do you want to export the file?");
+				File file = new File(sc.next());
+				if (!file.isWritable()) {
+					if (sc.yn("WARNING: This file is not writable.  It is possible to attempt to set it to writable.  Are you sure you want to continue?", "That is not a valid y/n answer.")) {
+						sc.setWritable(true);
+					} else {
+						return;
+					}
 				}
-				System.out.println("Path for Bee #" + currBee);
-				for (Node n : reconstructPath(h.paths.get(currBee - 1), h.destinations[currBee - 1])) {
-					System.out.println(n);
+				if (file.exists()) {
+					if (sc.yn("This file/directory already exists.  Are you sure you want to overwrite it?", "That is not a valid y/n answer.")) {
+						file.delete();
+					} else {
+						return;
+					}
 				}
+				file.getParentFile().mkdirs();
+				file.createNewFile();
 			}
 		}
 		//Node f = test.get(d.cube[0][0][2]);
@@ -101,6 +99,19 @@ class Driver{
 		//System.out.println(d.cube[0][0][3].isSolid);
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
+	}
+	public static queryUserForPaths(Result h, SafeScanner sc) {
+		while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
+			int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
+			if (currBee > 15 || currBee < 1) {
+				System.out.println("Enter a number from 1-15.");
+				continue;
+			}
+			System.out.println("Path for Bee #" + currBee);
+			for (Node n : reconstructPath(h.paths.get(currBee - 1), h.destinations[currBee - 1])) {
+				System.out.println(n);
+			}
+		}
 	}
 	public static Result pathFind(Driver d) {
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
