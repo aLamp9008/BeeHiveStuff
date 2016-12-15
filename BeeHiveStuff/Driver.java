@@ -52,8 +52,8 @@ class Driver{
 			Driver d = new Driver(dimention);
 			d.initCubeFromInput(fileReader);
 			System.out.println("Starting...");
-			//run(d);
-			Result h = run(d);
+			//pathFind(d);
+			Result h = pathFind(d);
 			while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
 				int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
 				if (currBee > 15 || currBee < 1) {
@@ -61,6 +61,8 @@ class Driver{
 					continue;
 				}
 				System.out.println("Path for Bee #" + currBee);
+				//System.out.println(h.paths.get(currBee - 1) == null);
+				//System.out.println(Arrays.toString(h.destinations));
 				for (Node n : reconstructPath(h.paths.get(currBee - 1), h.destinations[currBee - 1])) {
 					System.out.println(n);
 				}
@@ -72,7 +74,7 @@ class Driver{
 			
 			d.initCube();	
 			System.out.println("Starting...");
-			Result h = run(d);
+			Result h = pathFind(d);
 			while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
 				int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
 				if (currBee > 15 || currBee < 1) {
@@ -100,7 +102,7 @@ class Driver{
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
-	public static Result run(Driver d) {
+	public static Result pathFind(Driver d) {
 		//HashMap<Node, Integer> test = new HashMap<Node, Integer>();
 			//test = floodFill(cube[0][0][0], test, -1);
 			//HashMap<Node, Integer> test = d.floodFill(d.cube[0][0][0]);
@@ -171,6 +173,7 @@ class Driver{
 				}
 				//total += closestDistance == null ? 0 : closestDistance;
 				d.hives[closestHive].numberOfMoves = closestDistance;
+				//System.out.println(closestHive);
 				beeHivePair[d.bees[beePriority[j]].beeNumber] = closestHive == null ? null : d.hives[closestHive];
 				//System.out.println("Bee #" + (beePriority[j].beeNumber + 1) + (closestHive == null ? " is unreachable." : " reached Hive #" + (closestHive + 1) + " in " + closestDistance + " moves."));
 				d.cube[d.bees[j].X][d.bees[j].X][d.bees[j].X].isBee = false;
