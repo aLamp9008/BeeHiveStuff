@@ -83,6 +83,15 @@ class Driver{
 				}
 				file.getParentFile().mkdirs();
 				file.createNewFile();
+				PrintWriter fileW = new PrintWriter(file);
+				if (sc.yn("Would you like to add a header to the file?", "That is not yes or no.")) {
+					System.out.println("What header would you like the file to have?");
+					fileW.println(usc.nextLine());
+				}
+				fileW.println(dimention + "," + dimention + "," + dimention);
+				for (Node n : d.hives) {
+					
+				}
 			}
 		}
 		//Node f = test.get(d.cube[0][0][2]);
