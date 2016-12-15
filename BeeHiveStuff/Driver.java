@@ -1,6 +1,7 @@
 package BeeHiveStuff;
 import BeeHiveStuff.Node;
 import tinshoes.input.SafeScanner;
+import java.io.PrintWriter;
 //import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayDeque;
@@ -66,10 +67,10 @@ class Driver{
 			queryUserForPaths(h, sc);
 			if (sc.yn("Would you like to export the cube that was generated?", "That is not a valid answer.")) {
 				System.out.println("Where do you want to export the file?");
-				File file = new File(sc.next());
-				if (!file.isWritable()) {
+				File file = new File(usc.next());
+				if (file.exists() && !file.canWrite()) {
 					if (sc.yn("WARNING: This file is not writable.  It is possible to attempt to set it to writable.  Are you sure you want to continue?", "That is not a valid y/n answer.")) {
-						sc.setWritable(true);
+						file.setWritable(true);
 					} else {
 						return;
 					}
@@ -81,17 +82,41 @@ class Driver{
 						return;
 					}
 				}
-				file.getParentFile().mkdirs();
-				file.createNewFile();
-				PrintWriter fileW = new PrintWriter(file);
+				if (file.getParentFile() != null)
+					file.getParentFile().mkdirs();
+				PrintWriter fileW;
+				try {
+					file.createNewFile();
+					fileW = new PrintWriter(file);
+				} catch (Exception e) {
+					System.out.println("An exception occured. Aborting....");
+					return;
+				}
 				if (sc.yn("Would you like to add a header to the file?", "That is not yes or no.")) {
 					System.out.println("What header would you like the file to have?");
 					fileW.println(usc.nextLine());
 				}
 				fileW.println(dimention + "," + dimention + "," + dimention);
 				for (Node n : d.hives) {
-					
+					fileW.println(n.X + "," + n.Y + "," + n.Z);
 				}
+				for (Node n : d.bees) {
+					fileW.println(n.X + "," + n.Y + "," + n.Z);
+				}
+				List<int[]> solids = new ArrayList<int[]>();
+				for (Node[][] naa : d.cube) {
+					for (Node[] na : naa) {
+						for (Node n : na) {
+							if (n.isSolid)
+								solids.add(new int[] {n.X, n.Y, n.Z});
+						}
+					}
+				}
+				fileW.println(solids.size());
+				for (int[] c : solids) {
+					fileW.println(c[0] + "," + c[1] + "," + c[2]);
+				}
+				fileW.flush();
 			}
 		}
 		//Node f = test.get(d.cube[0][0][2]);
@@ -109,7 +134,7 @@ class Driver{
 		//System.out.println(test.get(cube[0][0][1]));
 //		System.out.println("Please type \"yes\"" to continue with calculation");
 	}
-	public static queryUserForPaths(Result h, SafeScanner sc) {
+	public static void queryUserForPaths(Result h, SafeScanner sc) {
 		while (sc.yn("Are there any bees you want to see the path for?", "That is not valid input.")) {
 			int currBee = sc.nextInt("What bee would you like the path for?", " is not valid input.", true);
 			if (currBee > 15 || currBee < 1) {
