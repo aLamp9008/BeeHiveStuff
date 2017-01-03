@@ -261,8 +261,8 @@ class Driver{
 	}
 
 	//MARK: - Path Finding
-
-	public HashMap<Node, Integer> floodFill(Node n) {
+	//To be replaced.
+	/*public HashMap<Node, Integer> floodFill(Node n) {
 		/*if (n.isSolid)
 			return h;
 		int d = c;
@@ -279,7 +279,7 @@ class Driver{
 				temp = floodFill(j, temp, d);
 		}
 		return temp;
-		*/
+		
 
 		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
 		//HashMap<Node, Node> pointed = new HashMap<Node, Node>();
@@ -313,7 +313,7 @@ class Driver{
 				TimeUnit.SECONDS.sleep(1);
 			} catch (Exception e) {
 				System.err.println("Something went wrong while sleeping.");
-			}*/
+			}
 			for (Node j : curr[0].getNextTo()) {
 				if (j != null) {
 					toDo.add(new Node[] {j, curr[0]});
@@ -321,6 +321,35 @@ class Driver{
 				}
 			}
 		}
+		return paths;
+	}*/
+	public HashMap<Node, Integer> floodFill(Node n) {
+		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
+		boolean done = false;
+		ArrayList<Node> thisRing = new ArrayList<Node>(), lastRing = new ArrayList<Node>();
+		int level = 0;
+		paths.put(n, level);
+		n.calculateNextTo();
+		for (Node j : n.getNextTo()) {
+			thisRing.add(j);
+		}
+		do {
+			level++;
+			lastRing = thisRing;
+			thisRing = new ArrayList<Node>();
+			done = true;
+			for (Node curr : lastRing) {
+				//System.out.println(curr);
+				curr.calculateNextTo();
+				for (Node j : curr.getNextTo()) {
+					if (!paths.containsKey(j) && !j.isSolid) {
+						paths.put(j, level);
+						thisRing.add(j);
+						done = false;
+					}
+				}
+			}
+		} while (!done);
 		return paths;
 	}
 	//REDO AND LOGIC TEST ^^
