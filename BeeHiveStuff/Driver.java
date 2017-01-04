@@ -54,7 +54,9 @@ class Driver{
 			d.initCubeFromInput(fileReader);
 			System.out.println("Starting...");
 			//pathFind(d);
+			long initTime = System.nanoTime();
 			Result h = pathFind(d);
+			System.out.println("Time elapsed: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initTime) + "ms");
 			queryUserForPaths(h, sc);
 		} else {
 			System.out.println("Please enter a number from 25 - 35");
@@ -63,7 +65,9 @@ class Driver{
 			
 			d.initCube();	
 			System.out.println("Starting...");
+			long initTime = System.nanoTime();
 			Result h = pathFind(d);
+			System.out.println("Time elapsed: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - initTime) + "ms");
 			queryUserForPaths(h, sc);
 			if (sc.yn("Would you like to export the cube that was generated?", "That is not a valid answer.")) {
 				System.out.println("Where do you want to export the file?");
