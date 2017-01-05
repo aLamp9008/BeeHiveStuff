@@ -288,29 +288,31 @@ class Driver{
 		HashMap<Node, Integer> paths = new HashMap<Node, Integer>();
 		//HashMap<Node, Node> pointed = new HashMap<Node, Node>();
 		//HashMap<Node, Node> potentialPointed = new HashMap<Node, Node>();
-		ArrayDeque<Node[]> toDo = new ArrayDeque<Node[]>();
+		ArrayDeque<Node> toDo = new ArrayDeque<Node>();
+		ArrayDeque<Integer> toDoPoint = new ArrayDeque<Integer>();
 		paths.put(n, 0);
 		n.calculateNextTo();
 		for (Node j : n.getNextTo()) {
 			if (j != null) {
-				toDo.add(new Node[] {j, n});
+				toDo.add(j);
+				toDoPoint.add(0);
 				//potentialPointed.put(j, n);
 			}
 		}
 		while (!toDo.isEmpty()) {
-			Node[] curr = toDo.poll();
-			if (curr[0].isSolid)
+			Node curr = toDo.poll();
+			if (curr.isSolid)
 				continue;
-			int currLen = paths.get(curr[1]) + 1; //The length of the previous path plus 1
-			if (paths.containsKey(curr[0])) {
-				if (paths.get(curr[0]) <= currLen) {
+			int currLen = toDoPoint.poll() + 1; //The length of the previous path plus 1
+			if (paths.containsKey(curr)) {
+				if (paths.get(curr) <= currLen) {
 					continue;
 
 				}
 			}
 			//pointed.put(curr, potentialPointed.get(curr));
-			curr[0].calculateNextTo();
-			paths.put(curr[0], currLen);
+			curr.calculateNextTo();
+			paths.put(curr, currLen);
 			//System.out.println(curr.X + "\t" + curr.Y + "\t" + curr.Z + "\t" + pointed.get(curr).X + "\t" + pointed.get(curr).Y + "\t" + pointed.get(curr).Z + "\t" + currLen);
 
 			/*try {
@@ -318,9 +320,10 @@ class Driver{
 			} catch (Exception e) {
 				System.err.println("Something went wrong while sleeping.");
 			}*/
-			for (Node j : curr[0].getNextTo()) {
+			for (Node j : curr.getNextTo()) {
 				if (j != null) {
-					toDo.add(new Node[] {j, curr[0]});
+					toDo.add(j);
+					toDoPoint.add(currLen);
 					//potentialPointed.put(j, curr);
 				}
 			}
